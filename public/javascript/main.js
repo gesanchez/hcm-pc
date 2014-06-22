@@ -1,5 +1,5 @@
-define(['conf','require'], function(conf){
-    
+require(['conf'], function(conf){
+
     require.config({
         baseUrl : conf.asset,
         paths: {
@@ -7,6 +7,7 @@ define(['conf','require'], function(conf){
             underscore: 'underscore',
             backbone: 'backbone',
             bootstrap : 'bootstrap.min',
+            templates: conf.templates
         },
         shim: {
             underscore: {
@@ -19,7 +20,8 @@ define(['conf','require'], function(conf){
             "bootstrap": ['jquery']
         }
     });
-    require(["app", "router"], function(App, Router){
+    
+    require(["app","router"], function(App, Router){
         Router.initialize(App);
     });
 });

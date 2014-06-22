@@ -25,8 +25,6 @@ Route::post('login', array('as' => 'login','before' => 'csrf',function(){
     $clave = Input::get('clave');
     $remember = Input::get('_remember');
     
-    echo $clave;
-    echo Hash::make($clave);
     if (Auth::attempt(array('cedula' => $cedula, 'password' => $clave), $remember)){
         
         return Redirect::route('root');
@@ -40,6 +38,7 @@ Route::post('login', array('as' => 'login','before' => 'csrf',function(){
 
 Route::get('logout', array('as' => 'logout', function () {
     Auth::logout();
-
     return Redirect::route('root');
 }));
+
+Route::get('usuarios', array('as' => 'users', 'before' => 'auth', 'uses' => 'UserController@index'));

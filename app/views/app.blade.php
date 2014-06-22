@@ -48,19 +48,22 @@
                 </ul>
             </nav>
             <div class="container" id="container_app">
-                
+                @yield('content')
             </div>
             <div class="footer">
                 Footer
             </div>
         </div>
-        <script type="text/javascript" data-main="{{ asset('javascript/main') }}" src="{{ asset('javascript/require.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('javascript/require.js') }}"></script>
         <script type="text/javascript">
             define('conf',[],function(){
                 return{
-                    asset : '{{asset('javascript')}}'
+                    asset : '{{asset('javascript')}}',
+                    templates: '{{asset('templates')}}'
                 };
             });
         </script>
+        <script type="text/javascript" src="{{ asset('javascript/main.js') }}"></script>
+        @yield('js')
     </body>
 </html>
