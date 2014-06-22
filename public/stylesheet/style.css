@@ -1,0 +1,44 @@
+html, body{
+    height: 100%;
+}
+.wrap{
+  min-height: 100%;
+  height: auto;
+  margin: 0 auto -60px;
+  padding: 0 0 60px;
+}
+
+.panels-book{
+    border: 1px solid #DDDDDD;
+    margin-bottom: 10px;
+    position:relative;
+}
+
+.shape-panel{
+    position:absolute;
+    top:0px;
+    left:0px;
+    width:100%;
+    background-color: rgba(0,0,0,0.8)
+}
+.shape-panel div{
+    text-align:center;
+    color:#FFFFFF;
+}
+
+.footer{
+    height: 60px;
+    background-color: #f5f5f5;
+    text-align:center;
+    padding-top:10px;
+}
+
+.footer a{
+    margin-left: 4px;
+    margin-right: 4px;
+}
+
+.navbar-default {
+    background-color: #3498DB !important;
+    border-color: rgba(0, 0, 0, 0);
+}

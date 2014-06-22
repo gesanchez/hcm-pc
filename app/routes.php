@@ -1,0 +1,45 @@
+<?php
+
+/*
+|--------------------------------------------------------------------------
+| Application Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register all of the routes for an application.
+| It's a breeze. Simply tell Laravel the URIs it should respond to
+| and give it the Closure to execute when that URI is requested.
+|
+*/
+
+Route::get('/', array('as' => 'root',function(){
+    if (!Auth::check()){
+        return View::make('login');
+    }else{
+        return View::make('app');
+    }
+}));
+
+Route::post('login', array('as' => 'login','before' => 'csrf',function(){
+    
+    $cedula = Input::get('cedula');
+    $clave = Input::get('clave');
+    $remember = Input::get('_remember');
+    
+    echo $clave;
+    echo Hash::make($clave);
+    if (Auth::attempt(array('cedula' => $cedula, 'password' => $clave), $remember)){
+        
+        return Redirect::route('root');
+        
+    }else{
+        
+        return Redirect::route('root')->with('error', 'Cedula o clave incorrectas, intente de nuevo');
+    }
+
+}));
+
+Route::get('logout', array('as' => 'logout', function () {
+    Auth::logout();
+
+    return Redirect::route('root');
+}));
