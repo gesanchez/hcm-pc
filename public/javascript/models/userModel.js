@@ -5,14 +5,40 @@ define(['underscore', 'backbone'], function ( _, Backbone){
         defaults : {
             id : null,
             cedula: '',
-            first_name: '',
-            last_name: '',
-            photo: ''
+            nombre: '',
+            apellido: '',
+            foto: '',
+            rol : '',
+            password : '',
+            deletable: false,
+            updateable: false
         },
         urlRoot: '/usuarios',
-        idAttribute: '_id',
-        validate: function(attrs, options){
-
+        idAttribute: 'id',
+        validate : function(attrs, options){
+            var errors = [];
+            
+            if (!attrs.cedula){
+                errors.push({name: 'cedula', message: 'El campo cedula es requerido'});
+            }
+            
+            if (!attrs.nombre){
+                errors.push({name: 'nombre', message: 'El campo nombre es requerido'});
+            }
+            
+            if (!attrs.apellido){
+                errors.push({name: 'apellido', message: 'El campo apellido es requerido'});
+            }
+            
+            if(!attrs.rol){
+                errors.push({name: 'rol', message: 'Se debe seleccionar un grupo'});
+            }
+            
+            if(!attrs.password){
+                errors.push({name: 'password', message: 'El campo password es requerido'});
+            }
+           
+            return errors.length > 0 ? errors : false;
         }
     });
         
@@ -20,10 +46,10 @@ define(['underscore', 'backbone'], function ( _, Backbone){
         initialize: function() {
             this.page = 0;
             this.limit = 30;
-            this.count = 0;
+            this.total = 0;
         },
         parse: function(response) {
-            this.count = response.count;
+            this.total = response.total;
             return response.data;
         },
         model : User,

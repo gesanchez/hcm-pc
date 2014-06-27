@@ -16,10 +16,10 @@
                     <b>HCM</b>
                 </a>
             </div>
-            <nav class="navbar-collapse collapse">
+            <nav class="navbar-collapse collapse navbar-default">
                 <ul class="nav navbar-nav navbar-righ pull-right">
                     <li>
-                        <a href="#">Usuarios</a>
+                        <a href="{{ route('users') }}">Usuarios</a>
                     </li>
                     <li>
                         <a href="#">Grupos</a>

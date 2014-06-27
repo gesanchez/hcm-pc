@@ -7,20 +7,21 @@ class UserController extends \BaseController {
          */
         public function index(){
             
-            return View::make('users',array('users' => User::take(30)->orderBy('nombre','DESC')->get()->toJSON()));
+            $users = array();
+            foreach (User::take(30)->orderBy('nombre','DESC')->get() as $value){
+                $users[] = array(
+                    'id' => $value->id,
+                    'nombre' => $value->nombre,
+                    'apellido' => $value->apellido,
+                    'foto' => $value->foto,
+                    'cedula' => $value->cedula,
+                    'deletable' => true,
+                    'updateable' => true
+                );
+            }
+            return View::make('users',array('users' => json_encode($users)));
         }
         
-        
-        /**
-	 * Show the form for creating a new resource.
-	 *
-	 * @return Response
-	 */
-	public function create()
-	{
-		//
-	}
-
 
 	/**
 	 * Store a newly created resource in storage.
@@ -29,7 +30,7 @@ class UserController extends \BaseController {
 	 */
 	public function store()
 	{
-		//
+		
 	}
 
 

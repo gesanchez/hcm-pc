@@ -42,3 +42,4 @@ Route::get('logout', array('as' => 'logout', function () {
 }));
 
 Route::get('usuarios', array('as' => 'users', 'before' => 'auth', 'uses' => 'UserController@index'));
+Route::post('usuarios', array('as' => 'users', 'before' => 'auth|csrf', 'uses' => 'UserController@store'));

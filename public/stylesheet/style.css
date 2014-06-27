@@ -28,9 +28,10 @@ html, body{
 
 .footer{
     height: 60px;
-    background-color: #f5f5f5;
+    background-color: #000000;
     text-align:center;
     padding-top:10px;
+    color: #FFFFFF;
 }
 
 .footer a{
@@ -39,6 +40,9 @@ html, body{
 }
 
 .navbar-default {
-    background-color: #3498DB !important;
+    background-color: blue !important;
     border-color: rgba(0, 0, 0, 0);
+    border-radius: 0px;
+    -moz-border-radius: 0px;
+    -webkit-border-radius: 0px
 }
