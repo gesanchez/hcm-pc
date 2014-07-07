@@ -1,0 +1,54 @@
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">
+              <span aria-hidden="true">&times;</span>
+              <span class="sr-only" data-name="icon_close">Cerrar</span>
+          </button>
+          <h4 class="modal-title" id="myModalLabel">Informaci&oacute;n de usuario</h4>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-xs-6">
+                    <% if (foto === '' || foto === null) { %>
+                    <span class="glyphicon glyphicon-user" style="font-size: 20rem"></span>
+                    <% } else { %>
+                    <i class="header_box" style="height: 240px;width: 100%;background-image: url('<%= foto %>')"></i>
+                    <% } %>
+                </div>
+                <div class="col-xs-6">
+                    <div class="row">
+                        <div class="col-xs-12 form-group">
+                            <label>Cedula:</label>
+                            <p><%= cedula %></p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12 form-group">
+                            <label>Nombre:</label>
+                            <p><%= nombre %></p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12 form-group">
+                            <label>Apellido:</label>
+                            <p><%= apellido %></p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12 form-group">
+                            <label>Grupo:</label>
+                            <% if (rol == 1) { %><p>Administrador</p><% } %>
+                            <% if (rol == 2) { %><p>Jefe de Inform&aacute;tica</p><% } %>
+                            <% if (rol == 3) { %><p>T&eacute;cnico de inform&aacute;tica</p><% } %>
+                            <% if (rol == 4) { %><p>Usuario</p><% } %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal" name="close">Cerrar</button>
+        </div>
+    </div>
+</div>

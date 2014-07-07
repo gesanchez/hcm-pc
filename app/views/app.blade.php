@@ -8,6 +8,7 @@
         <link rel="stylesheet" href="{{ asset('stylesheet/style.css') }}"/>
         <link rel="stylesheet" href="{{ asset('stylesheet/bootstrap.min.css') }}"/>
         <link rel="stylesheet" href="{{ asset('stylesheet/bootstrap-theme.min.css') }}"/>
+        <link rel="stylesheet" href="{{ asset('stylesheet/font-awesome.min.css') }}"/>
     </head>
     <body>
         <div class="wrap" id="wrap-app">

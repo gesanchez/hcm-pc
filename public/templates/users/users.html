@@ -1,13 +1,21 @@
-<div style="background-color: #21b384;color: #FFFFFF;padding-bottom: 5px;padding-top: 5px">
+<div class="box_element green">
     <div style="text-align: center;position: relative">
         <% if (foto === '' || foto === null) {%>
             <i class="glyphicon glyphicon-user" style="font-size: 100px"></i>
+        <% }else{ %>
+            <i class="header_box" style="height: 104px;width: 100%;background-image: url('<%= foto %>')"></i>
         <% } %>
-        <div style="position: absolute;top: 5px;right: 5px">
-            <span class="glyphicon glyphicon-cog dropdown-toggle" data-toggle="dropdown" style="font-size: 18px;cursor: pointer"></span>
+        <div class="tools <% if (foto !== '' && foto !== null) {%>shape<% } %>">
+            <span class="glyphicon glyphicon-cog dropdown-toggle" title="Opciones" data-toggle="dropdown" style="font-size: 18px;cursor: pointer"></span>
             <ul class="dropdown-menu" role="menu">
-                <li><a href="#">Eliminar</a></li>
+                <li><a href="#" data-name="view">Ver informaci&oacute;n</a></li>
+                <% if (updateable === true) {%>
                 <li><a href="#">Modificar</a></li>
+                <% } %>
+                
+                <% if (deletable === true) {%>
+                <li><a href="#" data-name="delete">Eliminar</a></li>
+                <% } %>
             </ul>
         </div>
     </div>

@@ -41,5 +41,8 @@ Route::get('logout', array('as' => 'logout', function () {
     return Redirect::route('root');
 }));
 
+# Users module
 Route::get('usuarios', array('as' => 'users', 'before' => 'auth', 'uses' => 'UserController@index'));
 Route::post('usuarios', array('as' => 'users', 'before' => 'auth|csrf', 'uses' => 'UserController@store'));
+Route::delete('usuarios/{id}', array('before' => 'auth|csrf', 'uses' => 'UserController@destroy'));
+Route::post('usuarios/upload_image', array('before' => 'auth|csrf', 'uses' => 'UserController@upload_image'));

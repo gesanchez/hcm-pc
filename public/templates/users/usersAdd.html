@@ -3,38 +3,50 @@
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal">
               <span aria-hidden="true">&times;</span>
-              <span class="sr-only">Cerrar</span>
+              <span class="sr-only" data-name="icon_close">Cerrar</span>
           </button>
           <h4 class="modal-title" id="myModalLabel">Registrar nuevos usuarios</h4>
         </div>
         <div class="modal-body">
             <form role="form">
+                <input type="hidden" name="_token" value="<%= token %>"/>
                 <div class="row">
                     <div class="col-xs-6">
                         <% if (foto === '' || foto === null) { %>
                         <span class="glyphicon glyphicon-user" style="font-size: 20rem"></span>
                         <% } else { %>
+                        <i class="header_box" style="height: 240px;width: 100%;background-image: url('<%= foto %>')"></i>
                         <% } %>
+                        <input type="file" name="file" style="visibility: hidden;position: absolute;top: -9999px;left: -9999px" autocomplete="off"/>
+                        <div style="text-align: left;padding-top: 5px">
+                            <p class="text-danger hidden"></p>
+                            <button type="button" class="btn btn-info" data-toggle="tooltip" data-placement="top" title="Cambiar imagen" name="change_image">
+                                <i class="glyphicon glyphicon-edit"></i>
+                            </button>
+                            <button type="submit" class="btn btn-success hidden" data-toggle="tooltip" data-placement="top" title="Subir imagen">
+                                <i class="glyphicon glyphicon-upload"></i>
+                            </button>
+                        </div>
                     </div>
                     <div class="col-xs-6">
                         <div class="row">
                             <div class="col-xs-12 form-group">
                                 <label>Cedula(*):</label>
-                                <input type="text" name="cedula" class="form-control" maxlength="11"/>
+                                <input type="text" name="cedula" class="form-control" maxlength="11" value="<%= cedula %>"/>
                                 <span class="help-inline"></span>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-xs-12 form-group">
                                 <label>Nombre(*):</label>
-                                <input type="text" name="nombre" class="form-control"/>
+                                <input type="text" name="nombre" class="form-control" value="<%= nombre %>"/>
                                 <span class="help-inline"></span>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-xs-12 form-group">
                                 <label>Apellido(*):</label>
-                                <input type="text" name="apellido" class="form-control"/>
+                                <input type="text" name="apellido" class="form-control" value="<%= apellido %>"/>
                                 <span class="help-inline"></span>
                             </div>
                         </div>
@@ -42,10 +54,10 @@
                             <div class="col-xs-12 form-group">
                                 <label>Grupo(*):</label>
                                 <select class="form-control" name="rol">
-                                    <option value="1">Administrador</option>
-                                    <option value="2">Jefe de Inform&aacute;tica</option>
-                                    <option value="3">T&eacute;cnico de inform&aacute;tica</option>
-                                    <option value="4">Usuario</option>
+                                    <option value="1" <% if (rol === 1) { %>selected=''<% } %>>Administrador</option>
+                                    <option value="2" <% if (rol === 2) { %>selected=''<% } %>>Jefe de Inform&aacute;tica</option>
+                                    <option value="3" <% if (rol === 3) { %>selected=''<% } %>>T&eacute;cnico de inform&aacute;tica</option>
+                                    <option value="4" <% if (rol === 4) { %>selected=''<% } %>>Usuario</option>
                                 </select>
                                 <span class="help-inline"></span>
                             </div>
@@ -55,18 +67,24 @@
                 <div class="row">
                     <div class="col-xs-6 form-group">
                         <label>Clave(*):</label>
-                        <input class="form-control" type="password" name="password"/>
+                        <input class="form-control" type="password" name="password" value="<%= password %>"/>
                         <span class="help-inline"></span>
                     </div>
                     <div class="col-xs-6 form-group">
                         <label>Repetir Clave(*):</label>
-                        <input class="form-control" type="password" name="rpt-password"/>
+                        <input class="form-control" type="password" name="rpt_password" value="<%= rpt_password %>"/>
+                        <span class="help-inline"></span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <p class="text-danger hidden" data-name="message_validation"></p>
                     </div>
                 </div>
             </form>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal" name="close">Cerrar</button>
           <button type="button" class="btn btn-primary" name="guardar">Guardar</button>
         </div>
     </div>

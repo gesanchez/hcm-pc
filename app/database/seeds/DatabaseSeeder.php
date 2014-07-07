@@ -27,7 +27,8 @@ class UserTableSeeder extends Seeder {
                 'cedula' => '19049260',
                 'password' => Hash::make('german'),
                 'nombre' => 'german',
-                'apellido' => 'sanchez'
+                'apellido' => 'sanchez',
+                'rol' => 1
             )
         );
     }

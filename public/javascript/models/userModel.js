@@ -10,6 +10,7 @@ define(['underscore', 'backbone'], function ( _, Backbone){
             foto: '',
             rol : '',
             password : '',
+            'rpt_password' : '',
             deletable: false,
             updateable: false
         },
@@ -20,6 +21,10 @@ define(['underscore', 'backbone'], function ( _, Backbone){
             
             if (!attrs.cedula){
                 errors.push({name: 'cedula', message: 'El campo cedula es requerido'});
+            }
+
+            if (attrs.cedula && attrs.cedula.length < 6){
+                errors.push({name: 'cedula', message: 'El campo cedula debe contener al menos 6 numeros'});
             }
             
             if (!attrs.nombre){
@@ -35,7 +40,19 @@ define(['underscore', 'backbone'], function ( _, Backbone){
             }
             
             if(!attrs.password){
-                errors.push({name: 'password', message: 'El campo password es requerido'});
+                errors.push({name: 'password', message: 'El campo clave es requerido'});
+            }
+            
+            if(attrs.password && attrs.password.length < 6){
+                errors.push({name: 'password', message: 'La clave debe contener al menos 6 caracteres'});
+            }
+            
+            if (!attrs.rpt_password){
+                errors.push({name: 'rpt_password', message: 'Debe repetir la clave'});
+            }
+            
+            if (attrs.rpt_password && attrs.password && attrs.password !== attrs.rpt_password){
+                errors.push({name: 'password', message: 'Las claves no coinciden'});
             }
            
             return errors.length > 0 ? errors : false;
@@ -43,17 +60,34 @@ define(['underscore', 'backbone'], function ( _, Backbone){
     });
         
     var UserCollection = Backbone.Collection.extend({
-        initialize: function() {
-            this.page = 0;
+        initialize: function(object) {
+            var obj = object || {};
+            this.page = 1;
             this.limit = 30;
-            this.total = 0;
+            this.total = obj.total || 0;
         },
         parse: function(response) {
             this.total = response.total;
             return response.data;
         },
         model : User,
-        url : '/usuarios'
+        url : '/usuarios',
+        search : function(parameters, callback){
+            var self = this,
+                params = _.extend(parameters, {page: 0, limit : self.limit});
+            self.page = 0;
+            self.fetch({ remove: true, data: params }).always(function() {
+                self.page = self.page + 1;
+                if (callback){ callback(); }
+            });
+        },
+        paginate : function(parameters){
+            var self = this,
+                params = _.extend(parameters, {page: self.page, limit : self.limit});
+            self.fetch({ remove: false, data: params }).always(function() {
+                self.page = self.page + 1;
+            });
+        }
     });
     
     return {

@@ -4,8 +4,6 @@ html, body{
 .wrap{
   min-height: 100%;
   height: auto;
-  margin: 0 auto -60px;
-  padding: 0 0 60px;
 }
 
 .panels-book{
@@ -45,4 +43,35 @@ html, body{
     border-radius: 0px;
     -moz-border-radius: 0px;
     -webkit-border-radius: 0px
+}
+
+.box_element{
+    padding-bottom: 5px;
+}
+
+.box_element.green{
+    background-color: #21b384;
+    color: #FFFFFF
+}
+
+.box_element .tools{
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    padding: 5px;
+}
+
+.box_element .shape{
+    background-color: rgba(0,0,0,0.5);
+    color: #FFFFFF;
+    border-bottom-left-radius: 3px;
+    -moz-border-bottom-left-radius: 3px;
+    -webkit-border-bottom-left-radius: 3px;
+}
+
+.header_box{
+    background-position: 50% 25%;
+    display: block;
+    background-repeat: no-repeat;
+    background-size: cover;
 }
