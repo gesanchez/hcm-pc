@@ -45,4 +45,11 @@ Route::get('logout', array('as' => 'logout', function () {
 Route::get('usuarios', array('as' => 'users', 'before' => 'auth', 'uses' => 'UserController@index'));
 Route::post('usuarios', array('as' => 'users', 'before' => 'auth|csrf', 'uses' => 'UserController@store'));
 Route::delete('usuarios/{id}', array('before' => 'auth|csrf', 'uses' => 'UserController@destroy'));
+Route::put('usuarios/{id}', array('before' => 'auth|csrf', 'uses' => 'UserController@update'));
 Route::post('usuarios/upload_image', array('before' => 'auth|csrf', 'uses' => 'UserController@upload_image'));
+Route::post('usuarios/{id}/upload_image', array('before' => 'auth|csrf', 'uses' => 'UserController@upload_image'));
+Route::get('perfil', array('as' => 'profile_view', 'before' => 'auth', 'uses' => 'UserController@profile'));
+
+# Problem module
+Route::get('problemas', array('as' => 'problems', 'before' => 'auth', 'uses' => 'ProblemsController@index'));
+Route::post('problemas', array('as' => 'problems', 'before' => 'auth|csrf', 'uses' => 'ProblemsController@store'));

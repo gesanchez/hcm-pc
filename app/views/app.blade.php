@@ -19,17 +19,16 @@
             </div>
             <nav class="navbar-collapse collapse navbar-default">
                 <ul class="nav navbar-nav navbar-righ pull-right">
+                    @if (Auth::user()->rol == 1)
                     <li>
                         <a href="{{ route('users') }}">Usuarios</a>
                     </li>
-                    <li>
-                        <a href="#">Grupos</a>
-                    </li>
+                    @endif
                     <li>
                         <a href="#">Inventario</a>
                     </li>
                     <li>
-                        <a href="#">Problemas</a>
+                        <a href="{{ route('problems') }}">Problemas t&iacute;picos</a>
                     </li>
                     <li>
                         <a href="#">Reportar un problema</a>
@@ -42,7 +41,10 @@
                         </a>
                         <ul class="dropdown-menu">
                             <li>
-                                <a href="{{ route('logout') }}">Cerrar sesion</a>
+                                <a href="{{ route('profile_view') }}">Ver perfil</a>
+                            </li>
+                            <li>
+                                <a href="{{ route('logout') }}">Cerrar sesi&oacute;n</a>
                             </li>
                         </ul>
                     </li>

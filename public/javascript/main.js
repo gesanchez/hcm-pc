@@ -22,6 +22,6 @@ require(['conf'], function(conf){
     });
     
     require(["app","router"], function(App, Router){
-        Router.initialize(App);
+        //Router.initialize(App);
     });
 });

@@ -10,7 +10,7 @@ define([
         
         return {
             
-            initialize: initialize
+            _init: initialize
         };
     
 });

@@ -9,11 +9,12 @@ define(['jquery','models/userModel','views/usersView'], function ($, model, view
     var init = function(app_container, container_list, data, count){
         var ele = $('#' + container_list),
             userAdd = new view.add({model: new model.model()}),
+            userEdit = new view.edit({model: new model.model()}),
             userView = new view.view({model: new model.model()}),
             userCollection = new model.collection($.parseJSON(data));
             userCollection.total = count;
         var userApp = new view.app({el: '#' + app_container, addview : userAdd, collection: userCollection}),
-            usersList = new view.list({collection : userCollection, view : userView});
+            usersList = new view.list({collection : userCollection, view : userView, edit: userEdit});
         
         userApp.$el.append(userAdd.el);
         usersList.render();
@@ -28,6 +29,13 @@ define(['jquery','models/userModel','views/usersView'], function ($, model, view
         /* Observer when a user is removed */
         usersList.on('element:destory', function(){
             userApp.research();
+        });
+        
+        /* Observer when a user is update */
+        userEdit.on('user:update', function(attrs){
+            var element = userCollection.get(attrs.id);
+            element.set(attrs);
+            userEdit.$el.modal('hide');
         });
     };
     

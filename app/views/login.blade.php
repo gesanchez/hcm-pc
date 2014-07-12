@@ -28,7 +28,7 @@
                                 <input type="password" placeholder="Clave" name="clave" class="form-control" autocomplete="off"/>
                             </div>
                             <div class="form-group">
-                                <input type="checkbox" name="_remember" value="1"/>
+                                <input type="checkbox" name="_remember" value="1" checked=""/>
                                 <label>Recordarme</label>
                                 <button class="btn btn-primary pull-right" type="submit">Entrar</button>
                             </div>

@@ -7,6 +7,8 @@ class UserController extends \BaseController {
          */
         public function index(){
             
+            $userAuth = Auth::user();
+            
             $term = Input::get('term');
             $limit = Input::get('limit');
             $page = Input::get('page');
@@ -24,8 +26,8 @@ class UserController extends \BaseController {
                         'apellido' => ucwords($value->apellido),
                         'foto' => $value->foto,
                         'cedula' => $value->cedula,
-                        'deletable' => true,
-                        'updateable' => true
+                        'deletable' => ($userAuth->rol == 1) ? true : false,
+                        'updateable' => ($userAuth->rol == 1) ? true : false
                     );
                 }
                                 
@@ -57,9 +59,11 @@ class UserController extends \BaseController {
 	 */
 	public function store(){
             
+            $userAuth = Auth::user();
+            
             $cedula = Input::get('cedula');
-            $nombre = Input::get('nombre');
-            $apellido = Input::get('apellido');
+            $nombre = strtolower(Input::get('nombre'));
+            $apellido = strtolower(Input::get('apellido'));
             $rol = Input::get('rol');
             $password = Input::get('password');
             $foto = Input::get('foto');
@@ -72,34 +76,10 @@ class UserController extends \BaseController {
             
             $user = User::create(array('cedula' => $cedula, 'nombre' => ucwords($nombre), 'apellido' => ucwords($apellido), 'rol' => $rol, 'foto' => $foto, 'password' => Hash::make($password)));
             $user['ok'] = true;
-            $user['deletable'] = true;
-            $user['updateable'] = true;
+            $user['deletable'] = ($userAuth->rol == 1) ? true: false;
+            $user['updateable'] = ($userAuth->rol == 1) ? true: false;
             return Response::json($user);
 		
-	}
-
-
-	/**
-	 * Display the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function show($id)
-	{
-		//
-	}
-
-
-	/**
-	 * Show the form for editing the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function edit($id)
-	{
-		//
 	}
 
 
@@ -109,9 +89,43 @@ class UserController extends \BaseController {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function update($id)
-	{
-		//
+	public function update($id){
+            
+            $userAuth = Auth::user();
+            
+            $id = Input::get('id');
+            $cedula = Input::get('cedula');
+            $nombre = strtolower(Input::get('nombre'));
+            $apellido = strtolower(Input::get('apellido'));
+            $rol = Input::get('rol');
+            $password = Input::get('password');
+            $foto = Input::get('foto');
+		
+            $user = User::find($id);
+            
+            if (count ($user) === 0){ return Response::json('{"ok": false, "message":"El usuario no se encuentra"}'); }
+            
+            if (User::where('cedula', '=', $cedula)->where('id','!=',$id)->count() > 0){
+                $data = array('ok' => false, 'message' => 'Ya existe un usuario con ese mismo numero de cedula');
+                return Response::json($data);
+            }
+            
+            $user->cedula = $cedula;
+            $user->nombre = $nombre;
+            $user->apellido = $apellido;
+            $user->rol = $rol;
+            $user->foto = $foto;
+            
+            if (!empty ($password)){
+                $user->password = Hash::make($password);
+            }
+            
+            $user->save();
+            
+            $user['ok'] = true;
+            $user['deletable'] = ($userAuth->rol == 1) ? true: false;
+            $user['updateable'] = ($userAuth->rol == 1) ? true: false;
+            return Response::json($user);
 	}
 
 
@@ -123,6 +137,14 @@ class UserController extends \BaseController {
 	 */
 	public function destroy($id){
                 
+            $userAuth = Auth::user();
+            
+            if ($userAuth->rol != 1){
+                return Response::json(array(
+                    'error' => 'Accion no permitida'
+                ), 403);
+            }
+            
             $user = User::find($id);
             //print_r($user);
             if ($user){
@@ -156,6 +178,16 @@ class UserController extends \BaseController {
                 return '<textarea data-type="application/json">{"ok": true, "url": "'.asset('uploads/'.$filename).'"}</textarea>';
             }
             
+        }
+        
+        /**
+         * View profile of a user
+         * 
+         * 
+         */
+        public function profile(){
+            
+            return View::make('profile',array('user' => json_encode(Auth::user())));
         }
 
 }

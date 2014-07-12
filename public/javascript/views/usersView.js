@@ -4,9 +4,11 @@ define([
     'backbone',
     'text!templates/users/users.html', 
     'text!templates/users/usersAdd.html', 
-    'text!templates/users/userView.html', 
+    'text!templates/users/userView.html',
+    'text!templates/users/usersEdit.html',
+    'views/deleteView',
     'transport'
-],function($, _, Backbone, template, TemplateAdd, TemplateView){
+],function($, _, Backbone, template, TemplateAdd, TemplateView, TemplateEdit, Msg){
     'use strict';
     
     var ListUsers = Backbone.View.extend({
@@ -19,7 +21,7 @@ define([
             self.collection.on('destroy', self.removeItem, self);
         },
         addItem : function(item){
-            var user = new User({ model: item, view : this.options.view });
+            var user = new User({ model: item, view : this.options.view, edit: this.options.edit });
             this.$el.append(user.el);
         },
         removeItem: function(){
@@ -55,7 +57,8 @@ define([
         },
         events : {
             'click a[data-name="view"]' : 'showInformation',
-            'click a[data-name="delete"]' : 'destroyElement'
+            'click a[data-name="delete"]' : 'destroyElement',
+            'click a[data-name="edit"]' : 'editElement'
         },
         showInformation : function(e){
             e.preventDefault();
@@ -63,17 +66,31 @@ define([
             this.options.view.$el.modal();
         },
         destroyElement : function(e){
+            e.preventDefault();
             var target = $(e.target),
                 self = this,
                 parent = target.parent().addClass('hidden');
-            this.model.destroy({
-                success: function(model, response) {
-                    self.$el.remove();
-                },
-                error: function(){
+            Msg.show({title: 'Eliminar usuario',msg: 'Desea usted eliminar este usuario?'});
+            Msg.on('msg:response', function(res){
+                if (res){
+                    self.model.destroy({
+                        success: function(model, response) {
+                            self.$el.remove();
+                        },
+                        error: function(){
+                            parent.removeClass('hidden');
+                        }
+                    });
+                }else{
                     parent.removeClass('hidden');
                 }
             });
+        },
+        editElement: function(e){
+            e.preventDefault();
+            this.options.edit.model.set(this.model.attributes);
+            this.options.edit.hiddenValidationError();
+            this.options.edit.$el.modal();
         },
         removeElement : function(e){
             this.$el.remove();
@@ -286,14 +303,13 @@ define([
         showMore: function(){
             var self = this;
             if (self.collection.length < self.collection.total){
-                console.log(this.show);
                 if (this.show === false){
                     this.show = true;
                     self.$el.append('<div style="text-align: center;margin-bottom: 20px"><button class="btn" type="button" name="show_more">Ver mas</button></div>');
                 }
             }else{
                 this.show = false;
-                self.$el.find('button[name="show_more"]').remove();
+                self.$el.find('button[name="show_more"]').parent().remove();
             }
         },
         research: function(){
@@ -326,11 +342,164 @@ define([
         }
     });
     
+    var UserEdit = Backbone.View.extend({
+        tagName : 'div',
+        className : 'modal fade',
+        template : _.template(TemplateEdit),
+        attributes : {
+            tabindex : "-1",
+            role : "dialog",
+            'aria-labelledby' : "myModalLabel",
+            'aria-hidden' : "true"
+        },
+        initialize: function(){
+            this.model.on('change', this.render, this);
+        },
+        events: {
+            'click button[name="save"]': 'update',
+            'keydown input[type="text"][name="cedula"]' : 'onlyNumber',
+            'keydown input[type="text"][name="nombre"],input[type="text"][name="apellido"]' : 'onlyCharacter',
+            'click button:submit' : 'uploadImage',
+            'form submit' : function(e){ e.preventDefault(); },
+            'click button[name="change_image"]': 'changeImage',
+            'change input:file' : 'validateImage',
+            'click button[name="close"],span[data-name="close"]' : 'cancelUpload'
+        },
+        render: function(){
+            var model = _.extend({token: $('meta[name="csrf-token"]').attr('content')},this.model.toJSON());
+            this.$el.html(this.template(model));
+            this.$el.find('*[data-toggle="tooltip"]').tooltip();
+        },
+        update: function(){
+            var self = this;
+            
+            this.hiddenValidationError();
+            
+            self.$el.find('input:text, select, input:password').each(function(){
+                var $this = $(this);
+                self.model.set($this.attr('name'), $this.val());
+            });
+            
+            if (!self.model.isValid() && (_.where(self.model.validationError, {name: "password"}).length === 0) && (_.where(self.model.validationError, {name: "rpt_password"}).length === 0)) {
+                self.showErrors(self.model.validationError);
+            }else{
+                self.$el.find('button[name="save"]').prop('disabled',true);
+                self.model.save({},{
+                    validate: false,
+                    success : function(model,xhr){ 
+                        self.$el.find('button[name="save"]').prop('disabled',false);
+                        if (xhr.ok === true){
+                            self.trigger("user:update", xhr);
+                        }else if (xhr.ok === false){
+                            self.showValidationError(xhr.message);
+                        }
+                    },
+                    error : function(){
+                        self.$el.find('button[name="save"]').prop('disabled',false);
+                        self.showValidationError('Ocurrio un error al intentar guardar, intente nuevamente');
+                    }
+                });
+            }
+        },
+        showErrors: function(errors) {
+            var self = this;
+            _.each(errors, function (error) {
+                var input = self.$el.find('input[name="'+error.name+'"]'),
+                    parent = input.parent();
+                parent.addClass('has-error');
+                parent.find('.help-inline').text(error.message);
+            });
+        },
+        hideErrors: function () {
+            this.$el.find('.form-group').removeClass('has-error');
+            this.$el.find('.help-inline').text('');
+        },
+        showValidationError: function(message){
+            this.$el.find('p[data-name="message_validation"]').text(message).removeClass('hidden');
+        },
+        hiddenValidationError: function(){
+            this.$el.find('p[data-name="message_validation"]').text('').addClass('hidden');
+        },
+        validateImage: function(e){
+            var self = this,
+                target = e.target;
+                
+            if (target.files[0] !== undefined){
+                var extension = target.files[0].name.split('.').pop().toLowerCase();
+                if (extension !== 'jpg' && extension !== 'jpeg' && extension !== 'png'){
+                    self.$el.find('p.text-danger').text('Solo se permiten imagenes de tipo jpg o png').removeClass('hidden');
+                    self.$el.find('button:submit').addClass('hidden');
+                }else{
+                    self.$el.find('button:submit').removeClass('hidden');
+                }
+            }else{
+                self.$el.find('button:submit').addClass('hidden');
+            }
+        },
+        changeImage: function(e){
+            var self = this;
+            self.$el.find('p.text-danger').text('').addClass('hidden');
+            self.$el.find('input:file').trigger('click');
+        },
+        uploadImage: function(e){
+            e.preventDefault();
+            var self = this,
+                form = self.$el.find('form');
+            self.$el.find('button[name="guardar"]').addClass('hidden');
+               
+            self.ajax = $.ajax(self.model.url() + '/upload_image', {
+                 files: $(":file", form.get(0)),
+                 data: $(":hidden", form.get(0)).serializeArray(),
+                 iframe: true,
+                 processData: false
+             }).complete(function(data) {
+                 self.ajax = null;
+                 self.$el.find('button[name="guardar"]').removeClass('hidden');
+                 if (data.hasOwnProperty('responseJSON')){
+                     var response = data.responseJSON;
+                     self.model.set('foto',response.url,{silent: true});
+                     self.$el.find('input:text, select, input:password').each(function(){
+                         var $this = $(this);
+                         self.model.set($this.attr('name'), $this.val(), {silent: true});
+                     });
+                     self.render();
+                 }else{
+                     self.$el.find('p.text-danger').text('Ocurrio un problema al intentar subir la imagen, intente nuevamente').removeClass('hidden');
+                     self.$el.find('button:submit').addClass('hidden');
+                 }
+             });
+        },
+        cancelUpload : function(){
+            var self = this;
+            
+            if (self.ajax !== null && self.ajax !== undefined){
+                self.ajax.abort();
+                self.ajax = null;
+                self.$el.find('p.text-danger').text('').addClass('hidden');
+            }
+        },
+        onlyNumber : function(e){
+            var key = e.which;
+            if (!((key >= 48 && key <= 57) || (key >= 96 && key <= 105) || key === 8 || (key >= 37 && key <= 40) || key === 27 || key === 9 || key === 116)){
+                e.preventDefault();
+            }
+        },
+        onlyCharacter : function(e){
+            var key = e.which;
+            if ((key >= 48 && key <= 57) || (key >= 96 && key <= 105)){
+                e.preventDefault();
+            }
+        }
+    });
+    
+    _.extend(UserEdit, Backbone.Events);
+    
     return {
         list : ListUsers,
         user : User,
         add : UserAdd,
         app : UserApp,
-        view : UserView
+        view : UserView,
+        edit: UserEdit
     };
 });
