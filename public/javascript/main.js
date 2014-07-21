@@ -21,8 +21,7 @@ require(['conf'], function(conf){
         }
     });
     
-    require(["app","router", "backbone"], function(App, Router, Backbone){
-        App.router = Router;
+    require(["app","backbone"], function(App, Backbone){
         Backbone.history.start();
     });
 });

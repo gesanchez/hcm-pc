@@ -1,10 +1,9 @@
 define([
-    'app',
     'jquery',
     'models/inventoryModel',
     'views/inventoryView',
-    'backbone'
-], function (App,$, Model, View, Backbone) {
+    'routers/inventoryRouter'
+], function ($, Model, View, Router) {
     'use strict';
     
     /**
@@ -13,15 +12,20 @@ define([
      * @param {json} with inital data of users
      */
     var init = function(app_container, detail, data, count){
+        
         var ele = $('#' + app_container),
+            route = new Router(),
             problemAdd = new View.Add({model: new Model.Model()}),
             problemEdit = new View.Edit({model: new Model.Model()}),
             problemView = new View.View({model: new Model.Model()}),
             problemCollection = new Model.Collection($.parseJSON(data));
             problemCollection.total = count;
             
-        var problemApp = new View.App({el: '#' + app_container, collection: problemCollection, addview : problemAdd}),
+        var problemApp = new View.App({el: '#' + app_container, collection: problemCollection, addview : problemAdd, router: route}),
             inventoryList = new View.List({collection : problemCollection, view: problemView, edit: problemEdit});
+            
+        route.options.collection = inventoryList;
+        route.options.el = ele;
             
         problemApp.$el.append(problemAdd.el);
         inventoryList.render();
@@ -45,25 +49,6 @@ define([
             element.set(attrs);
             problemEdit.$el.modal('hide');
         });
-        
-         
-        App.router.route('','defaultAction', function(){
-            console.log('asdasd');
-        });
-        App.router.route('addItem','addItem');
-
-        App.router.on('route:addItem', function(){
-            console.log('asd');
-            inventoryList.$el.remove();
-        });
-
-        App.router.on('route:defaultAction', function(){
-            console.log('asdasd');
-            ele.append(inventoryList.el);
-        });
-        
-        console.log(Backbone.history.fragment);
-        App.router.navigate(Backbone.history.fragment, {trigger: true});
         
     };
         

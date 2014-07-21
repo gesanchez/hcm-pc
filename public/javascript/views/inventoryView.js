@@ -118,7 +118,8 @@ define([
             'click button[name="create_problem"]' : 'addProblem'
         },
         addItem : function(){
-            App.router.navigate("addItem",{trigger: true});
+            this.options.router.navigate("addItem",{trigger: true});
+            //App.router.navigate("addItem",{trigger: true});
         },
         stopSearch : function(e){
             var self = this,
