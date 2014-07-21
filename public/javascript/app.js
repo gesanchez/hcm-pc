@@ -17,7 +17,7 @@ define(['jquery','underscore','backbone','module','bootstrap'],function($, _, Ba
     Backbone.emulateHTTP = true;
     Backbone.emulateJSON = false; 
 
-    var App = {collections : {}, views: {}};
+    var App = {collections : {}, views: {}, router: null};
         
     module.exports = App;
 

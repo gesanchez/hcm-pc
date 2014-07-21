@@ -24,5 +24,10 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	protected $hidden = array('password', 'remember_token');
         
         protected $fillable = ['cedula', 'nombre', 'apellido','password','foto','rol'];
+        
+        public function asignacion(){
+            
+            return $this->hasOne('Inventory');
+        }
     
 }

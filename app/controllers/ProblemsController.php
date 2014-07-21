@@ -16,11 +16,12 @@ class ProblemsController extends \BaseController{
             $off = $limit * $page;
             
             if (Request::ajax()){
-                $users = array();
-                $user = Problem::where('titulo','LIKE', $term)->take(30)->skip($off)->orderBy('titulo','ASC')->get();
-                $count = Problem::where('titulo','LIKE', $term)->count();
-                foreach ($user as $value){
-                    $users[] = array(
+                $problems = array();
+                $problem = Problem::where('titulo','LIKE', "%{$term}%")->take(30)->skip($off)->orderBy('titulo','ASC')->get();
+                $count = Problem::where('titulo','LIKE', "%{$term}%")->count();
+                
+                foreach ($problem as $value){
+                    $problems[] = array(
                         'id' => $value->id,
                         'titulo' => $value->titulo,
                         'resolucion' => $value->resolucion,
@@ -29,7 +30,7 @@ class ProblemsController extends \BaseController{
                     );
                 }
                                 
-                return Response::json(array('total' => $count[0]->count, 'data' => $users));
+                return Response::json(array('total' => $count, 'data' => $problems));
             }
             
             
@@ -68,5 +69,67 @@ class ProblemsController extends \BaseController{
         $problem['deletable'] = ($userAuth->rol == 1) ? true: false;
         $problem['updateable'] = ($userAuth->rol == 1) ? true: false;
         return Response::json($problem);
+    }
+    
+    /**
+    * Update the specified resource in storage.
+    *
+    * @param  int  $id
+    * @return Response
+    */
+    public function update($id){
+
+        $userAuth = Auth::user();
+
+        $id = Input::get('id');
+        $titulo = Input::get('titulo');
+        $resolucion = strtolower(Input::get('resolucion'));
+        $problem = Problem::find($id);
+
+        if (count ($problem) === 0){ return Response::json('{"ok": false, "message":"El problema no se encuentra"}'); }
+
+        if ($problem::where('titulo', '=', $titulo)->where('id','!=',$id)->count() > 0){
+            $data = array('ok' => false, 'message' => 'Ya existe un problema con ese mismo titulo');
+            return Response::json($data);
+        }
+
+        $problem->titulo = $titulo;
+        $problem->resolucion = $resolucion;
+
+        $problem->save();
+
+        $problem['ok'] = true;
+        $problem['deletable'] = ($userAuth->rol == 1) ? true: false;
+        $problem['updateable'] = ($userAuth->rol == 1) ? true: false;
+        return Response::json($problem);
+    }
+    
+    /**
+    * Remove a problem
+    *
+    * @param  int  $id id of a problem
+    * @return Response
+    */
+    public function destroy($id){
+
+        $userAuth = Auth::user();
+
+        if ($userAuth->rol != 1){
+            return Response::json(array(
+                'error' => 'Accion no permitida'
+            ), 403);
+        }
+
+        $problem = Problem::find($id);
+        if ($problem){
+            $problem->delete();
+            return Response::json(array(
+                'ok' => true
+            ), 200);
+        }else{
+            return Response::json(array(
+                'error' => 'Problema no encontrado'
+            ), 404);
+        }
     }
 }

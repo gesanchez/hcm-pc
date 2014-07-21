@@ -5,7 +5,7 @@
               <span aria-hidden="true">&times;</span>
               <span class="sr-only" data-name="icon_close">Cerrar</span>
           </button>
-          <h4 class="modal-title" id="myModalLabel">Registrar nuevo problema</h4>
+          <h4 class="modal-title" id="myModalLabel">Ver informaci&oacute;n del problema</h4>
         </div>
         <div class="modal-body">
             <div class="row">
@@ -15,29 +15,21 @@
                 <div class="col-xs-6">
                     <div class="row">
                         <div class="col-xs-12 form-group">
-                            <label>T&iacute;tulo(*):</label>
-                            <input type="text" name="titulo" class="form-control" maxlength="50"/>
-                            <span class="help-inline"></span>
+                            <label>T&iacute;tulo:</label>
+                            <p><%= titulo %></p>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-xs-12 form-group">
                             <label>Posible soluci&oacute;n:</label>
-                            <textarea name="resolucion" class="form-control" rows="10"></textarea>
-                            <span class="help-inline"></span>
+                            <p><%= resolucion %></p>
                         </div>
                     </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-xs-12">
-                    <p class="text-danger hidden" data-name="message_validation"></p>
                 </div>
             </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal" name="close">Cerrar</button>
-          <button type="button" class="btn btn-primary" name="save">Guardar</button>
         </div>
     </div>
 </div>

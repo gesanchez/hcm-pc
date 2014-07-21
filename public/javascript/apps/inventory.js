@@ -1,8 +1,10 @@
 define([
+    'app',
     'jquery',
-    'models/problemModel',
-    'views/problemView'
-], function ($, Model, View) {
+    'models/inventoryModel',
+    'views/inventoryView',
+    'backbone'
+], function (App,$, Model, View, Backbone) {
     'use strict';
     
     /**
@@ -19,14 +21,14 @@ define([
             problemCollection.total = count;
             
         var problemApp = new View.App({el: '#' + app_container, collection: problemCollection, addview : problemAdd}),
-            problemList = new View.List({collection : problemCollection, view: problemView, edit: problemEdit});
+            inventoryList = new View.List({collection : problemCollection, view: problemView, edit: problemEdit});
             
         problemApp.$el.append(problemAdd.el);
-        problemList.render();
-        ele.append(problemList.el);
+        inventoryList.render();
+        ele.append(inventoryList.el);
         
         /* Observer when a problem is removed */
-        problemList.on('element:destory', function(){
+        inventoryList.on('element:destory', function(){
             problemApp.research();
         });
         
@@ -43,8 +45,28 @@ define([
             element.set(attrs);
             problemEdit.$el.modal('hide');
         });
+        
+         
+        App.router.route('','defaultAction', function(){
+            console.log('asdasd');
+        });
+        App.router.route('addItem','addItem');
+
+        App.router.on('route:addItem', function(){
+            console.log('asd');
+            inventoryList.$el.remove();
+        });
+
+        App.router.on('route:defaultAction', function(){
+            console.log('asdasd');
+            ele.append(inventoryList.el);
+        });
+        
+        console.log(Backbone.history.fragment);
+        App.router.navigate(Backbone.history.fragment, {trigger: true});
+        
     };
-    
+        
     return {
         "_init" : init
     };

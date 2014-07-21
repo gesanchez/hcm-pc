@@ -25,7 +25,7 @@
                     </li>
                     @endif
                     <li>
-                        <a href="#">Inventario</a>
+                        <a href="{{ route('inventory') }}">Inventario</a>
                     </li>
                     <li>
                         <a href="{{ route('problems') }}">Problemas t&iacute;picos</a>

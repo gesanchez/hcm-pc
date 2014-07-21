@@ -4,10 +4,10 @@
 <div id="problem_app">
     <div class="page-header">
         <div class="col-xs-7 col-sm-7 col-md-7 col-lg-7">
-            <h1>Problemas T&iacute;picos</h1>
+            <h1>Inventario</h1>
         </div>
         <div class="col-xs-12 col-sm-5 col-md-5 col-lg-5" style="padding-top: 20px">
-            <button class="btn pull-right btn-info" style="margin-left: 2%" name="addproblem" title="Agregar nuevos problemas tipicos" data-toggle="tooltip" data-placement="top">
+            <button class="btn pull-right btn-info" style="margin-left: 2%" name="additem" title="Agregar nuevos item" data-toggle="tooltip" data-placement="top">
                 <i class="fa fa-plus-circle" style="font-size: 16px"></i>
             </button>
             <div class="input-group col-xs-7 col-sm-8 col-md-7 col-lg-7 pull-right">
@@ -26,7 +26,7 @@
 
 @section('js')
 <script type="text/javascript">
-    require(['apps/problems'], function(app){
+    require(['apps/inventory'], function(app){
        app._init('problem_app','problem_list' ,'{{ $problems }}',{{ $count }}); 
     });
 </script>

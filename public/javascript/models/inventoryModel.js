@@ -4,13 +4,15 @@ define([
 ], function ( _, Backbone){
     'use strict';
     
-    var Problem = Backbone.Model.extend({
+    var Item = Backbone.Model.extend({
         defaults : {
             id : null,
-            titulo: '',
-            resolucion: ''
+            codigo: '',
+            type: '',
+            updateable: true,
+            deletable: true
         },
-        urlRoot: '/problemas',
+        urlRoot: '/inventario',
         idAttribute: 'id',
         validate : function(attrs, options){
             var errors = [];
@@ -23,7 +25,7 @@ define([
         }
     });
     
-    var ProblemCollection = Backbone.Collection.extend({
+    var itemsCollection = Backbone.Collection.extend({
         initialize: function(object) {
             var obj = object || {};
             this.page = 1;
@@ -34,8 +36,8 @@ define([
             this.total = response.total;
             return response.data;
         },
-        model : Problem,
-        url : '/problemas',
+        model : Item,
+        url : '/inventario',
         search : function(parameters, callback){
             var self = this,
                 params = _.extend(parameters, {page: 0, limit : self.limit});
@@ -55,7 +57,7 @@ define([
     });
     
     return {
-        Model : Problem,
-        Collection: ProblemCollection
+        Model : Item,
+        Collection: itemsCollection
     };
 });

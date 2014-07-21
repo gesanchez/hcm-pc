@@ -2,15 +2,16 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'text!templates/problems/problem.html',
-    'text!templates/problems/addProblem.html',
-    'text!templates/problems/viewProblem.html',
-    'text!templates/problems/editProblem.html',
+    'text!templates/inventory/inventory.html',
+    'text!templates/inventory/inventory.html',
+    'text!templates/inventory/inventory.html',
+    'text!templates/inventory/inventory.html',
+    'app',
     'confirm'
-],function($, _, Backbone, Template, TemplateAdd, TemplateView, TemplateEdit){
+],function($, _, Backbone, Template, TemplateAdd, TemplateView, TemplateEdit, App){
     'use strict';
     
-    var ProblemList = Backbone.View.extend({
+    var ItemList = Backbone.View.extend({
         tagName : 'div',
         className : 'row',
         initialize : function(options){
@@ -20,7 +21,7 @@ define([
             self.collection.on('destroy', self.removeItem, self);
         },
         addItem : function(item){
-            var problem = new Problem({ model: item, view : this.options.view, edit: this.options.edit });
+            var problem = new Item({ model: item, view : this.options.view, edit: this.options.edit });
             this.$el.append(problem.el);
         },
         removeItem: function(element){
@@ -37,9 +38,9 @@ define([
         }
     });
     
-    _.extend(ProblemList, Backbone.Events);
+    _.extend(ItemList, Backbone.Events);
     
-    var Problem = Backbone.View.extend({
+    var Item = Backbone.View.extend({
         tagName : 'div',
         className : 'col-xs-12 col-sm-6 col-md-6 col-lg-3',
         template: _.template(Template),
@@ -72,7 +73,7 @@ define([
                 self = this,
                 parent = target.parent().addClass('hidden');
                 $.confirm({
-                    text: "Desea usted eliminar este problema?",
+                    text: "Desea usted eliminar este Item?",
                     confirmButton: "Si",
                     cancelButton: "No",
                     confirm: function(button) {
@@ -99,28 +100,25 @@ define([
         }
     });
     
-    var ProblemApp = Backbone.View.extend({
+    var ItemApp = Backbone.View.extend({
         initialize : function (options) {
             this.options = options || {};
             this.show = false;
-            this.$el.find('button[name="addproblem"]').tooltip();
+            this.$el.find('button[name="additem"]').tooltip();
             this.collection.on('remove', this.showMore, this);
             this.collection.on('add', this.showMore, this);
             this.showMore();
             this.initial_state();
         },
         events : {
-            'click button[name= "addproblem"]' : 'addProblem',
+            'click button[name= "additem"]' : 'addItem',
             'keydown input:text[name="find_problem"]' : 'stopSearch',
             'keyup input:text[name="find_problem"]' : 'startSearch',
             'click button[name="show_more"]' : 'paginate',
             'click button[name="create_problem"]' : 'addProblem'
         },
-        addProblem : function(){
-            if (this.options.hasOwnProperty('addview')){
-                this.options.addview.model.set(this.options.addview.model.defaults);
-                this.options.addview.$el.modal();
-            }
+        addItem : function(){
+            App.router.navigate("addItem",{trigger: true});
         },
         stopSearch : function(e){
             var self = this,
@@ -153,8 +151,6 @@ define([
         },
         showMore: function(){
             var self = this;
-            console.log(self.collection);
-            console.log(self.collection.total + ' - ' + self.collection.length);
             if (self.collection.length < self.collection.total){
                 if (this.show === false){
                     this.show = true;
@@ -168,7 +164,7 @@ define([
         initial_state: function(){
             var self = this;
             if (self.collection.length === 0){
-                self.$el.append('<div style="text-align: center;margin-bottom: 20px"><p class="lead">No exite un problema t&iacute;pico creado aun</p><button class="btn" type="button" name="create_problem">Crear</button></div>');
+                self.$el.append('<div style="text-align: center;margin-bottom: 20px"><p class="lead">No exite un item creado aun</p><button class="btn" type="button" name="create_problem">Crear</button></div>');
             }else{
                 
                 self.$el.find('button[name="create_problem"]').parent().remove();
@@ -362,9 +358,9 @@ define([
     _.extend(ProblemEdit, Backbone.Events);
     
     return {
-        List : ProblemList,
-        Problem : Problem,
-        App : ProblemApp,
+        List : ItemList,
+        Problem : Item,
+        App : ItemApp,
         Add : ProblemAdd,
         View: ProblemView,
         Edit: ProblemEdit

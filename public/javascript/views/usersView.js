@@ -6,9 +6,9 @@ define([
     'text!templates/users/usersAdd.html', 
     'text!templates/users/userView.html',
     'text!templates/users/usersEdit.html',
-    'views/deleteView',
-    'transport'
-],function($, _, Backbone, template, TemplateAdd, TemplateView, TemplateEdit, Msg){
+    'transport',
+    'confirm'
+],function($, _, Backbone, template, TemplateAdd, TemplateView, TemplateEdit){
     'use strict';
     
     var ListUsers = Backbone.View.extend({
@@ -70,9 +70,12 @@ define([
             var target = $(e.target),
                 self = this,
                 parent = target.parent().addClass('hidden');
-            Msg.show({title: 'Eliminar usuario',msg: 'Desea usted eliminar este usuario?'});
-            Msg.on('msg:response', function(res){
-                if (res){
+        
+            $.confirm({
+                text: "Desea usted eliminar este usuario?",
+                confirmButton: "Si",
+                cancelButton: "No",
+                confirm: function(button) {
                     self.model.destroy({
                         success: function(model, response) {
                             self.$el.remove();
@@ -81,7 +84,8 @@ define([
                             parent.removeClass('hidden');
                         }
                     });
-                }else{
+                },
+                cancel: function(button) {
                     parent.removeClass('hidden');
                 }
             });

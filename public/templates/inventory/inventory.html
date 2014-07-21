@@ -1,19 +1,23 @@
 <div class="box_element green">
     <div style="text-align: center;position: relative">
-        <i class="fa fa-asterisk" style="font-size: 100px"></i>
+        <% if (type == 1) {%>
+        <i class="fa fa-desktop" style="font-size: 100px;margin-top: 20px"></i>
+        <% } else { %>
+        <i class="fa fa-laptop" style="font-size: 100px;margin-top: 20px"></i>
+        <% } %>
         <div class="tools">
             <span class="glyphicon glyphicon-cog dropdown-toggle" title="Opciones" data-toggle="dropdown" style="font-size: 18px;cursor: pointer"></span>
             <ul class="dropdown-menu" role="menu">
                 <li><a href="#" data-name="view">Ver informaci&oacute;n</a></li>
-                <% if (updateable === true) {%>
+                <% if (updateable == true) {%>
                 <li><a href="#" data-name="edit">Modificar</a></li>
                 <% } %>
                 
-                <% if (deletable === true) {%>
+                <% if (deletable == true) {%>
                 <li><a href="#" data-name="delete">Eliminar</a></li>
                 <% } %>
             </ul>
         </div>
     </div>
-    <p style="margin-left: 2px;margin-right: 2px;text-align: center"><%= titulo %></p>
+    <p style="margin-left: 2px;margin-right: 2px;text-align: center"><%= codigo %></p>
 </div>

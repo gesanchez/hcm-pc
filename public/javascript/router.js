@@ -4,13 +4,10 @@ define([
     'backbone'
     ], function($, _, Backbone) {
    
-        Backbone.history.start();
-        
-        var initialize = function(){};
-        
-        return {
+        var AppRouter = Backbone.Router.extend({
             
-            _init: initialize
-        };
+        });
+        
+        return new AppRouter();
     
 });

@@ -5,7 +5,7 @@
               <span aria-hidden="true">&times;</span>
               <span class="sr-only" data-name="icon_close">Cerrar</span>
           </button>
-          <h4 class="modal-title" id="myModalLabel">Registrar nuevo problema</h4>
+          <h4 class="modal-title" id="myModalLabel">Modificar un problema</h4>
         </div>
         <div class="modal-body">
             <div class="row">
@@ -16,14 +16,14 @@
                     <div class="row">
                         <div class="col-xs-12 form-group">
                             <label>T&iacute;tulo(*):</label>
-                            <input type="text" name="titulo" class="form-control" maxlength="50"/>
+                            <input type="text" name="titulo" class="form-control" maxlength="50" value="<%= titulo %>"/>
                             <span class="help-inline"></span>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-xs-12 form-group">
                             <label>Posible soluci&oacute;n:</label>
-                            <textarea name="resolucion" class="form-control" rows="10"></textarea>
+                            <textarea name="resolucion" class="form-control" rows="10"><%= resolucion %></textarea>
                             <span class="help-inline"></span>
                         </div>
                     </div>
@@ -37,7 +37,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal" name="close">Cerrar</button>
-          <button type="button" class="btn btn-primary" name="save">Guardar</button>
+          <button type="button" class="btn btn-primary" name="save">Guardar cambios</button>
         </div>
     </div>
 </div>

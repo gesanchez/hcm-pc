@@ -53,3 +53,8 @@ Route::get('perfil', array('as' => 'profile_view', 'before' => 'auth', 'uses' =>
 # Problem module
 Route::get('problemas', array('as' => 'problems', 'before' => 'auth', 'uses' => 'ProblemsController@index'));
 Route::post('problemas', array('as' => 'problems', 'before' => 'auth|csrf', 'uses' => 'ProblemsController@store'));
+Route::delete('problemas/{id}', array('before' => 'auth|csrf', 'uses' => 'ProblemsController@destroy'));
+Route::put('problemas/{id}', array('before' => 'auth|csrf', 'uses' => 'ProblemsController@update'));
+
+# Inventory
+Route::get('inventario', array('as' => 'inventory', 'before' => 'auth', 'uses' => 'InventoryController@index'));
