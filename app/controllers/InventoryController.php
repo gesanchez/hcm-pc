@@ -26,7 +26,8 @@ class InventoryController extends \BaseController{
                         'codigo' => $value->codigo,
                         'type' => $value->type,
                         'deletable' => ($userAuth->rol == 1) ? true : false,
-                        'updateable' => ($userAuth->rol == 1) ? true : false
+                        'updateable' => ($userAuth->rol == 1) ? true : false,
+                        'element' => ($value->type == 1) ? Laptop::find($value->resource_id) : Pcs::find($value->resource_id)
                     );
                 }
                                 
@@ -41,7 +42,8 @@ class InventoryController extends \BaseController{
                     'codigo' => $value->codigo,
                     'type' => $value->type,
                     'deletable' => ($userAuth->rol == 1) ? true : false,
-                    'updateable' => ($userAuth->rol == 1) ? true : false
+                    'updateable' => ($userAuth->rol == 1) ? true : false,
+                    'element' => ($value->type == 1) ? Laptop::find($value->resource_id) : Pcs::find($value->resource_id)
                 );
             }
             return View::make('inventory',array('problems' => json_encode($invs), 'count' => Inventory::count(),'users' => User::all()));

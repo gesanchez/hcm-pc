@@ -17,7 +17,7 @@ class ProblemsController extends \BaseController{
             
             if (Request::ajax()){
                 $problems = array();
-                $problem = Problem::where('titulo','LIKE', "%{$term}%")->take(30)->skip($off)->orderBy('titulo','ASC')->get();
+                $problem = Problem::where('titulo','LIKE', "%{$term}%")->take($limit)->skip($off)->orderBy('titulo','ASC')->get();
                 $count = Problem::where('titulo','LIKE', "%{$term}%")->count();
                 
                 foreach ($problem as $value){

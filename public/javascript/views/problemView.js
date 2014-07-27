@@ -77,6 +77,7 @@ define([
                     cancelButton: "No",
                     confirm: function(button) {
                         self.model.destroy({
+                            //silent: true,
                             wait: true,
                             error: function(){
                                 parent.removeClass('hidden');
@@ -104,7 +105,6 @@ define([
             this.options = options || {};
             this.show = false;
             this.$el.find('button[name="addproblem"]').tooltip();
-            this.collection.on('remove', this.showMore, this);
             this.collection.on('add', this.showMore, this);
             this.showMore();
             this.initial_state();
@@ -153,9 +153,8 @@ define([
         },
         showMore: function(){
             var self = this;
-            console.log(self.collection);
-            console.log(self.collection.total + ' - ' + self.collection.length);
-            if (self.collection.length < self.collection.total){
+            self.$el.find('button[name="create_problem"]').parent().remove();
+            if (self.collection.total - self.collection.length > 0){
                 if (this.show === false){
                     this.show = true;
                     self.$el.append('<div style="text-align: center;margin-bottom: 20px"><button class="btn" type="button" name="show_more">Ver mas</button></div>');
@@ -186,7 +185,11 @@ define([
         research: function(){
             var target = this.$el.find('input:text[name="find_problem"]'),
                 self = this;
-            self.collection.search({term : decodeURIComponent(target.val())});
+            self.collection.search({term : decodeURIComponent(target.val())}, function(){
+                if (self.collection.length === 0 && target.val() === ''){
+                    self.$el.append('<div style="text-align: center;margin-bottom: 20px"><p class="lead">No exite un problema t&iacute;pico creado aun</p><button class="btn" type="button" name="create_problem">Crear</button></div>');
+                }
+            });
         },
         paginate: function(){
             var target = this.$el.find('input:text[name="find_problem"]');

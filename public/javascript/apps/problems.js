@@ -12,6 +12,7 @@ define([
      */
     var init = function(app_container, detail, data, count){
         var ele = $('#' + app_container),
+            list = $('#' + detail),
             problemAdd = new View.Add({model: new Model.Model()}),
             problemEdit = new View.Edit({model: new Model.Model()}),
             problemView = new View.View({model: new Model.Model()}),
@@ -23,7 +24,7 @@ define([
             
         problemApp.$el.append(problemAdd.el);
         problemList.render();
-        ele.append(problemList.el);
+        list.append(problemList.el);
         
         /* Observer when a problem is removed */
         problemList.on('element:destory', function(){

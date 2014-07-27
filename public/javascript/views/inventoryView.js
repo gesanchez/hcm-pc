@@ -7,11 +7,11 @@ define([
     'text!templates/inventory/type.html',
     'text!templates/inventory/addLaptop.html',
     'text!templates/inventory/addPc.html',
-    'text!template/inventory/viewLaptop.html',
-    'text!template/inventory/viewPc.html',
+    'text!templates/inventory/viewLaptop.html',
+    'text!templates/inventory/viewPc.html',
     'confirm',
     'chosen'
-],function($, _, Backbone, App, Template, TemplateAddLaptop, TemplateAddPc, TemplateViewLaptop, TemplateViewPc){
+],function($, _, Backbone, App, Template, TemplateType, TemplateAddLaptop, TemplateAddPc, TemplateViewLaptop, TemplateViewPc){
     'use strict';
     
     var ItemList = Backbone.View.extend({
@@ -69,8 +69,7 @@ define([
         },
         showInformation : function(e){
             e.preventDefault();
-            this.options.view.model.set(this.model.attributes);
-            this.options.view.$el.modal();
+            App.router.navigate('view/' + this.model.id, {trigger: true});
         },
         destroyElement : function(e){
             e.preventDefault();
@@ -152,9 +151,9 @@ define([
             
             target.data('timer', timer);
         },
-        showMore: function(){
+        showMore: function(e){
             var self = this;
-            if (self.collection.length < self.collection.total){
+            if (self.collection.total - self.collection.length > 0){
                 if (this.show === false){
                     this.show = true;
                     self.$el.append('<div style="text-align: center;margin-bottom: 20px"><button class="btn" type="button" name="show_more">Ver mas</button></div>');
@@ -414,12 +413,46 @@ define([
     
     _.extend(PcAdd, Backbone.Events);
     
+    var viewLaptop = Backbone.View.extend({
+        tagName : 'div',
+        className : 'row',
+        template : _.template(TemplateViewLaptop),
+        initialize : function(options){
+            this.options = options || {};
+            this.render();
+        },
+        render : function(){
+            this.$el.html(this.template(this.model.attributes));
+        },
+        events : {
+            'click button[name="back"]' : function(){ App.router.navigate('',{trigger: true}); }
+        }
+    });
+    
+    var viewPc = Backbone.View.extend({
+        tagName : 'div',
+        className : 'row',
+        template : _.template(TemplateViewPc),
+        initialize : function(options){
+            this.options = options || {};
+            this.render();
+        },
+        render : function(){
+            this.$el.html(this.template(this.model.attributes));
+        },
+        events : {
+            'click button[name="back"]' : function(){ App.router.navigate('',{trigger: true}); }
+        }
+    });
+    
     return {
         List : ItemList,
         Type : inventoryType,
         Problem : Item,
         App : ItemApp,
         LaptopAdd : LaptopAdd,
-        PcAdd: PcAdd
+        PcAdd: PcAdd,
+        LaptopView: viewLaptop,
+        PcView: viewPc
     };
 });

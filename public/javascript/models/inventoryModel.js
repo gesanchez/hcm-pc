@@ -10,7 +10,8 @@ define([
             codigo: '',
             type: '',
             updateable: true,
-            deletable: true
+            deletable: true,
+            element : ''
         },
         urlRoot: '/inventario',
         idAttribute: 'id',
