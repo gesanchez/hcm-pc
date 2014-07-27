@@ -7,7 +7,8 @@ require(['conf'], function(conf){
             underscore: 'underscore',
             backbone: 'backbone',
             bootstrap : 'bootstrap.min',
-            templates: conf.templates
+            templates: conf.templates,
+            chosen : 'chosen'
         },
         shim: {
             underscore: {
@@ -17,11 +18,15 @@ require(['conf'], function(conf){
                 deps: ['underscore', 'jquery'],
                 exports: 'Backbone'
             },
-            "bootstrap": ['jquery']
+            "bootstrap": {
+                deps: ["jquery"]
+            },
+            "chosen" : {
+                deps: ["jquery"],
+                exports: 'jQuery.fn.chosen'
+            }
         }
     });
     
-    require(["app","backbone"], function(App, Backbone){
-        Backbone.history.start();
-    });
+    require(["app"]);
 });

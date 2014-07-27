@@ -1,4 +1,4 @@
-define(['jquery','underscore','backbone','module','bootstrap'],function($, _, Backbone, module) {
+define('app',['jquery','underscore','backbone','bootstrap'],function($, _, Backbone) {
     "use strict";
 
     $.ajaxSetup({
@@ -13,12 +13,10 @@ define(['jquery','underscore','backbone','module','bootstrap'],function($, _, Ba
     $('#container_app').css({
         'min-height': $(document).height() - nav - footer
     });
-
     Backbone.emulateHTTP = true;
     Backbone.emulateJSON = false; 
 
     var App = {collections : {}, views: {}, router: null};
         
-    module.exports = App;
-
+    return App;
 });

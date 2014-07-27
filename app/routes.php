@@ -58,3 +58,5 @@ Route::put('problemas/{id}', array('before' => 'auth|csrf', 'uses' => 'ProblemsC
 
 # Inventory
 Route::get('inventario', array('as' => 'inventory', 'before' => 'auth', 'uses' => 'InventoryController@index'));
+Route::post('inventario', array('as' => 'inventory', 'before' => 'auth|csrf', 'uses' => 'InventoryController@save'));
+Route::delete('inventario/{id}', array('before' => 'auth|csrf', 'uses' => 'InventoryController@destroy'));

@@ -14,7 +14,7 @@
                 <div class="input-group-addon">
                     <i class="glyphicon glyphicon-search"></i>
                 </div>
-                <input class="form-control" type="text" placeholder="Buscar..." name="find_problem" autocomplete="off"/>
+                <input class="form-control" type="text" placeholder="Buscar..." name="find_inventary" autocomplete="off"/>
             </div>
         </div>
         <div class="clearfix"></div>
@@ -27,7 +27,7 @@
 @section('js')
 <script type="text/javascript">
     require(['apps/inventory'], function(app){
-       app._init('problem_app','problem_list' ,'{{ $problems }}',{{ $count }}); 
+       app._init('problem_app','problem_list' ,'{{ $problems }}',{{ $count }},'{{ $users }}'); 
     });
 </script>
 @stop

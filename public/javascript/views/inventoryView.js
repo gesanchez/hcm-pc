@@ -2,13 +2,16 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'text!templates/inventory/inventory.html',
-    'text!templates/inventory/inventory.html',
-    'text!templates/inventory/inventory.html',
-    'text!templates/inventory/inventory.html',
     'app',
-    'confirm'
-],function($, _, Backbone, Template, TemplateAdd, TemplateView, TemplateEdit, App){
+    'text!templates/inventory/inventory.html',
+    'text!templates/inventory/type.html',
+    'text!templates/inventory/addLaptop.html',
+    'text!templates/inventory/addPc.html',
+    'text!template/inventory/viewLaptop.html',
+    'text!template/inventory/viewPc.html',
+    'confirm',
+    'chosen'
+],function($, _, Backbone, App, Template, TemplateAddLaptop, TemplateAddPc, TemplateViewLaptop, TemplateViewPc){
     'use strict';
     
     var ItemList = Backbone.View.extend({
@@ -56,6 +59,8 @@ define([
         render: function(){
             this.$el.html( this.template(this.model.toJSON()));
             this.$el.find('span.glyphicon-cog').tooltip();
+            
+            return this;
         },
         events : {
             'click a[data-name="view"]' : 'showInformation',
@@ -107,19 +112,16 @@ define([
             this.$el.find('button[name="additem"]').tooltip();
             this.collection.on('remove', this.showMore, this);
             this.collection.on('add', this.showMore, this);
-            this.showMore();
-            this.initial_state();
         },
         events : {
-            'click button[name= "additem"]' : 'addItem',
-            'keydown input:text[name="find_problem"]' : 'stopSearch',
-            'keyup input:text[name="find_problem"]' : 'startSearch',
-            'click button[name="show_more"]' : 'paginate',
-            'click button[name="create_problem"]' : 'addProblem'
+            'click button[name= "additem"],button[name="create_item"]' : 'addItem',
+            'keydown input:text[name="find_inventary"]' : 'stopSearch',
+            'keyup input:text[name="find_inventary"]' : 'startSearch',
+            'click button[name="show_more"]' : 'paginate'
         },
         addItem : function(){
-            this.options.router.navigate("addItem",{trigger: true});
-            //App.router.navigate("addItem",{trigger: true});
+            this.$el.find('button[name="create_item"]').parent().remove();
+            App.router.navigate("addItem",{trigger: true});
         },
         stopSearch : function(e){
             var self = this,
@@ -165,10 +167,10 @@ define([
         initial_state: function(){
             var self = this;
             if (self.collection.length === 0){
-                self.$el.append('<div style="text-align: center;margin-bottom: 20px"><p class="lead">No exite un item creado aun</p><button class="btn" type="button" name="create_problem">Crear</button></div>');
+                self.$el.append('<div style="text-align: center;margin-bottom: 20px"><p class="lead">No exite un item creado aun</p><button class="btn" type="button" name="create_item">Crear</button></div>');
             }else{
                 
-                self.$el.find('button[name="create_problem"]').parent().remove();
+                self.$el.find('button[name="create_item"]').parent().remove();
             }
         },
         no_result: function(){
@@ -181,46 +183,101 @@ define([
             }
         },
         research: function(){
-            var target = this.$el.find('input:text[name="find_problem"]'),
+            var target = this.$el.find('input:text[name="find_inventary"]'),
                 self = this;
-            self.collection.search({term : decodeURIComponent(target.val())});
+            self.collection.search({term : decodeURIComponent(target.val())}, function(){
+                if (target.val() === '' && self.collection.length === 0){
+                    self.$el.append('<div style="text-align: center;margin-bottom: 20px"><p class="lead">No exite un item creado aun</p><button class="btn" type="button" name="create_item">Crear</button></div>');
+                }
+            });
         },
         paginate: function(){
-            var target = this.$el.find('input:text[name="find_problem"]');
+            var target = this.$el.find('input:text[name="find_inventary"]');
             this.collection.paginate({term : decodeURIComponent(target.val())});
         }
     });
     
-    var ProblemAdd = Backbone.View.extend({
-        tagName : 'div',
-        className : 'modal fade',
-        template : _.template(TemplateAdd),
-        attributes : {
-            tabindex : "-1",
-            role : "dialog",
-            'aria-labelledby' : "myModalLabel",
-            'aria-hidden' : "true"
-        },
-        initialize: function(){
+    var inventoryType = Backbone.View.extend({
+        tagName: 'div',
+        className: 'row',
+        template: _.template(TemplateType),
+        initialize: function(options){
+            this.options = options || {};
             this.render();
-            this.model.on('change', this.render, this);
         },
-        events : {
-            'click button[name="save"]' : 'save'
+        events: {
+            'mouseover i.fa' : 'hover',
+            'mouseout i.fa' : 'out',
+            'click i.fa' : 'select',
+            'click button' : 'back'
         },
         render : function(){
             this.$el.html(this.template(this.model.toJSON()));
+            return this;
         },
-        save : function(){
+        hover: function(e){
+            var self = this,
+                target = $(e.target);
+        
+            target.css('color','#21b384');
+        },
+        out: function(e){
+            var self = this,
+                target = $(e.target);
+        
+            target.css('color','');
+        },
+        select: function(e){
+            var target = $(e.target);
+
+            if (target.data('type') === 1){
+                
+                App.router.navigate('addLaptop',{trigger: true});
+                
+            }else if (target.data('type') === 2){
+                
+                App.router.navigate('addPc',{trigger: true});
+            }
+        },
+        back: function(e){
+            App.router.navigate('',{trigger: true});
+        }
+    });
+    
+    var LaptopAdd = Backbone.View.extend({
+       tagName:'div',
+       className: 'row',
+       template: _.template(TemplateAddLaptop),
+       initialize: function(options){
+           this.options = options || {};
+           this.render();
+           this.$el.find('select[name="user_asigned"]').chosen();
+       },
+       render: function(){
+           this.$el.html(this.template({users : this.options.users}));
+           return this;
+       },
+       events: {
+            'click button[name="cancel"]' : 'cancel',
+            'submit form' : function(e){ e.preventDefault(); },
+            'keydown input:text[name="ram"],input:text[name="disco"]' : 'onlyNumber',
+            'click button[name="save"]' : 'save',
+       },
+       cancel : function(){
+           App.router.navigate('addItem',{trigger: true});
+       },
+       save: function(){
             var self = this;
             
-            this.hiddenValidationError();
-            this.hideErrors();
+            self.hiddenValidationError();
+            self.hideErrors();
             
-            self.$el.find('input:text, textarea').each(function(){
+            self.$el.find('input:text').each(function(){
                 var $this = $(this);
                 self.model.set($this.attr('name'), $this.val());
             });
+            
+            self.model.set('user_asigned',this.$el.find('select[name="user_asigned"]').val());
             
             if (!self.model.isValid()) {
                 self.showErrors(self.model.validationError);
@@ -230,7 +287,8 @@ define([
                     success : function(model,xhr){ 
                         self.$el.find('button[name="save"]').prop('disabled',false);
                         if (xhr.ok === true){
-                            self.trigger("problem:save", xhr);
+                            self.trigger("laptop:save", xhr);
+                            App.router.navigate('',{trigger: true});
                         }else if (xhr.ok === false){
                             self.showValidationError(xhr.message);
                         }
@@ -241,8 +299,8 @@ define([
                     }
                 });
             }
-        },
-        showErrors: function(errors) {
+       },
+       showErrors: function(errors) {
             var self = this;
             _.each(errors, function (error) {
                 var input = self.$el.find('input[name="'+error.name+'"]'),
@@ -260,60 +318,48 @@ define([
         },
         hiddenValidationError: function(){
             this.$el.find('p[data-name="message_validation"]').text('').addClass('hidden');
+        },
+        onlyNumber : function(e){
+            var key = e.which;
+            if (!((key >= 48 && key <= 57) || (key >= 96 && key <= 105) || key === 8 || (key >= 37 && key <= 40) || key === 27 || key === 9 || key === 116)){
+                e.preventDefault();
+            }
         }
     });
     
-    _.extend(ProblemAdd, Backbone.Events);
+    _.extend(LaptopAdd, Backbone.Events);
     
-    var ProblemView = Backbone.View.extend({
-        tagName : 'div',
-        className : 'modal fade',
-        template : _.template(TemplateView),
-        attributes : {
-            tabindex : "-1",
-            role : "dialog",
-            'aria-labelledby' : "myModalLabel",
-            'aria-hidden' : "true"
-        },
-        initialize: function(){
+    var PcAdd = Backbone.View.extend({
+       tagName:'div',
+       className: 'row',
+       template: _.template(TemplateAddPc),
+       initialize: function(options){
+            this.options = options || {};
             this.render();
-            this.model.on('change', this.render, this);
-        },
-        render: function(){
-            this.$el.html(this.template(this.model.toJSON()));
-        }
-    });
-    
-    var ProblemEdit = Backbone.View.extend({
-        tagName : 'div',
-        className : 'modal fade',
-        template : _.template(TemplateEdit),
-        attributes : {
-            tabindex : "-1",
-            role : "dialog",
-            'aria-labelledby' : "myModalLabel",
-            'aria-hidden' : "true"
-        },
-        initialize: function(){
-            this.render();
-            this.model.on('change', this.render, this);
-        },
-        events : {
-            'click button[name="save"]' : 'save'
-        },
-        render : function(){
-            this.$el.html(this.template(this.model.toJSON()));
-        },
-        save : function(){
+            this.$el.find('select[name="user_asigned"]').chosen();
+       },
+       render: function(){
+           this.$el.html(this.template({users : this.options.users}));
+           return this;
+       },
+       events: {
+           'click button[name="cancel"]' : 'cancel',
+           'click button[name="save"]' : 'save',
+           'submit form' : function(e){ e.preventDefault(); },
+           'keydown input:text[name="ram"],input:text[name="disco"]' : 'onlyNumber'
+       },
+       save: function(){
             var self = this;
             
-            this.hiddenValidationError();
-            this.hideErrors();
+            self.hiddenValidationError();
+            self.hideErrors();
             
-            self.$el.find('input:text, textarea').each(function(){
+            self.$el.find('input:text').each(function(){
                 var $this = $(this);
                 self.model.set($this.attr('name'), $this.val());
             });
+            
+            self.model.set('user_asigned',this.$el.find('select[name="user_asigned"]').val());
             
             if (!self.model.isValid()) {
                 self.showErrors(self.model.validationError);
@@ -323,7 +369,8 @@ define([
                     success : function(model,xhr){ 
                         self.$el.find('button[name="save"]').prop('disabled',false);
                         if (xhr.ok === true){
-                            self.trigger("problem:update", xhr);
+                            self.trigger("pc:save", xhr);
+                            App.router.navigate('',{trigger: true});
                         }else if (xhr.ok === false){
                             self.showValidationError(xhr.message);
                         }
@@ -334,8 +381,11 @@ define([
                     }
                 });
             }
-        },
-        showErrors: function(errors) {
+       },
+       cancel : function(){
+           App.router.navigate('addItem',{trigger: true});
+       },
+       showErrors: function(errors) {
             var self = this;
             _.each(errors, function (error) {
                 var input = self.$el.find('input[name="'+error.name+'"]'),
@@ -353,17 +403,23 @@ define([
         },
         hiddenValidationError: function(){
             this.$el.find('p[data-name="message_validation"]').text('').addClass('hidden');
+        },
+        onlyNumber : function(e){
+            var key = e.which;
+            if (!((key >= 48 && key <= 57) || (key >= 96 && key <= 105) || key === 8 || (key >= 37 && key <= 40) || key === 27 || key === 9 || key === 116)){
+                e.preventDefault();
+            }
         }
     });
     
-    _.extend(ProblemEdit, Backbone.Events);
+    _.extend(PcAdd, Backbone.Events);
     
     return {
         List : ItemList,
+        Type : inventoryType,
         Problem : Item,
         App : ItemApp,
-        Add : ProblemAdd,
-        View: ProblemView,
-        Edit: ProblemEdit
+        LaptopAdd : LaptopAdd,
+        PcAdd: PcAdd
     };
 });
