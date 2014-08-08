@@ -9,9 +9,11 @@ define([
     'text!templates/inventory/addPc.html',
     'text!templates/inventory/viewLaptop.html',
     'text!templates/inventory/viewPc.html',
+    'text!templates/inventory/editLaptop.html',
+    'text!templates/inventory/editPc.html',
     'confirm',
     'chosen'
-],function($, _, Backbone, App, Template, TemplateType, TemplateAddLaptop, TemplateAddPc, TemplateViewLaptop, TemplateViewPc){
+],function($, _, Backbone, App, Template, TemplateType, TemplateAddLaptop, TemplateAddPc, TemplateViewLaptop, TemplateViewPc, TemplateEditLaptop, TemplateEditPc){
     'use strict';
     
     var ItemList = Backbone.View.extend({
@@ -95,9 +97,7 @@ define([
         },
         editElement: function(e){
             e.preventDefault();
-            this.options.edit.model.set(this.model.attributes);
-            this.options.edit.hiddenValidationError();
-            this.options.edit.$el.modal();
+            App.router.navigate('edit/' + this.model.id, {trigger: true});
         },
         removeElement : function(e){
             this.remove();
@@ -445,6 +445,171 @@ define([
         }
     });
     
+    var editLaptop = Backbone.View.extend({
+        tagName: 'div',
+        className: 'row',
+        template: _.template(TemplateEditLaptop),
+        initialize: function(options){
+            this.options = options || {};
+            this.render();
+        },
+        render: function(){
+            var model = _.extend(this.model.attributes,{users : this.options.users});
+            this.$el.html(this.template(model));
+        },
+        events:{
+            'keydown input:text[name="ram"],input:text[name="disco"]' : 'onlyNumber',
+            'click button[name="cancel"]' : 'cancel',
+            'click button[name="save"]' : 'save'
+        },
+        save: function(){
+            var self = this;
+            
+            self.hiddenValidationError();
+            self.hideErrors();
+            
+            self.$el.find('input:text').each(function(){
+                var $this = $(this);
+                self.model.set($this.attr('name'), $this.val());
+            });
+            
+            self.model.set('user_asigned',this.$el.find('select[name="user_asigned"]').val());
+            
+            if (!self.model.isValid()) {
+                self.showErrors(self.model.validationError);
+            }else{
+                self.$el.find('button[name="save"]').prop('disabled',true);
+                self.model.save(null,{
+                    success : function(model,xhr){ 
+                        self.$el.find('button[name="save"]').prop('disabled',false);
+                        if (xhr.ok === true){
+                            self.trigger("pc:save", xhr);
+                            App.router.navigate('',{trigger: true});
+                        }else if (xhr.ok === false){
+                            self.showValidationError(xhr.message);
+                        }
+                    },
+                    error : function(){
+                        self.$el.find('button[name="save"]').prop('disabled',false);
+                        self.showValidationError('Ocurrio un error al intentar guardar, intente nuevamente');
+                    }
+                });
+            }
+       },
+        cancel : function(){
+           App.router.navigate('',{trigger: true});
+       },
+        showErrors: function(errors) {
+            var self = this;
+            _.each(errors, function (error) {
+                var input = self.$el.find('input[name="'+error.name+'"]'),
+                    parent = input.parent();
+                parent.addClass('has-error');
+                parent.find('.help-inline').text(error.message);
+            });
+        },
+        hideErrors: function () {
+            this.$el.find('.form-group').removeClass('has-error');
+            this.$el.find('.help-inline').text('');
+        },
+        showValidationError: function(message){
+            this.$el.find('p[data-name="message_validation"]').text(message).removeClass('hidden');
+        },
+        hiddenValidationError: function(){
+            this.$el.find('p[data-name="message_validation"]').text('').addClass('hidden');
+        },
+        onlyNumber : function(e){
+            var key = e.which;
+            if (!((key >= 48 && key <= 57) || (key >= 96 && key <= 105) || key === 8 || (key >= 37 && key <= 40) || key === 27 || key === 9 || key === 116)){
+                e.preventDefault();
+            }
+        }
+    });
+    
+    var editPc = Backbone.View.extend({
+        tagName: 'div',
+        className: 'row',
+        template: _.template(TemplateEditPc),
+        initialize: function(options){
+            this.options = options || {};
+            this.render();
+        },
+        render: function(){
+            var model = _.extend(this.model.attributes,{users : this.options.users});
+            this.$el.html(this.template(model));
+        },
+        events:{
+            'keydown input:text[name="ram"],input:text[name="disco"]' : 'onlyNumber',
+            'click button[name="cancel"]' : 'cancel',
+            'click button[name="save"]' : 'save'
+        },
+        save: function(){
+            var self = this;
+            
+            self.hiddenValidationError();
+            self.hideErrors();
+            
+            self.$el.find('input:text').each(function(){
+                var $this = $(this);
+                self.model.set($this.attr('name'), $this.val());
+            });
+            
+            console.log(self.model.isNew());
+            console.log(self.model.id);
+            console.log(self.model.get('id'));
+            self.model.set('user_asigned',this.$el.find('select[name="user_asigned"]').val());
+            
+            if (!self.model.isValid()) {
+                self.showErrors(self.model.validationError);
+            }else{
+                self.$el.find('button[name="save"]').prop('disabled',true);
+                self.model.save(null,{
+                    success : function(model,xhr){ 
+                        self.$el.find('button[name="save"]').prop('disabled',false);
+                        if (xhr.ok === true){
+                            self.trigger("pc:save", xhr);
+                            App.router.navigate('',{trigger: true});
+                        }else if (xhr.ok === false){
+                            self.showValidationError(xhr.message);
+                        }
+                    },
+                    error : function(){
+                        self.$el.find('button[name="save"]').prop('disabled',false);
+                        self.showValidationError('Ocurrio un error al intentar guardar, intente nuevamente');
+                    }
+                });
+            }
+       },
+        cancel : function(){
+           App.router.navigate('',{trigger: true});
+       },
+        showErrors: function(errors) {
+            var self = this;
+            _.each(errors, function (error) {
+                var input = self.$el.find('input[name="'+error.name+'"]'),
+                    parent = input.parent();
+                parent.addClass('has-error');
+                parent.find('.help-inline').text(error.message);
+            });
+        },
+        hideErrors: function () {
+            this.$el.find('.form-group').removeClass('has-error');
+            this.$el.find('.help-inline').text('');
+        },
+        showValidationError: function(message){
+            this.$el.find('p[data-name="message_validation"]').text(message).removeClass('hidden');
+        },
+        hiddenValidationError: function(){
+            this.$el.find('p[data-name="message_validation"]').text('').addClass('hidden');
+        },
+        onlyNumber : function(e){
+            var key = e.which;
+            if (!((key >= 48 && key <= 57) || (key >= 96 && key <= 105) || key === 8 || (key >= 37 && key <= 40) || key === 27 || key === 9 || key === 116)){
+                e.preventDefault();
+            }
+        }
+    });
+    
     return {
         List : ItemList,
         Type : inventoryType,
@@ -453,6 +618,8 @@ define([
         LaptopAdd : LaptopAdd,
         PcAdd: PcAdd,
         LaptopView: viewLaptop,
-        PcView: viewPc
+        PcView: viewPc,
+        LaptopEdit: editLaptop,
+        PcEdit: editPc
     };
 });

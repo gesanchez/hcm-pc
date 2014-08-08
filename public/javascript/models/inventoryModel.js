@@ -27,6 +27,7 @@ define([
     });
     
     var Laptop = Backbone.Model.extend({
+        idAttribute: 'id',
         defaults : {
             'id' : null,
             'type' : 1,
@@ -35,7 +36,7 @@ define([
             'disco' : '',
             'ram' : '',
             'marca' : '',
-            'pro_velocidad' : '',
+            'proc_velocidad' : '',
             'proc_modelo' : '',
             'proc_marca' : '',
             'user_asigned' : ''
@@ -64,7 +65,7 @@ define([
                 errors.push({name: 'marca', message: 'Cual es la marca'});
             }
             
-            if (!attrs.pro_velocidad){
+            if (!attrs.proc_velocidad){
                 errors.push({name: 'pro_velocidad', message: 'Se necesita saber cual es la velocidad del procesador'});
             }
             
@@ -87,10 +88,12 @@ define([
     var Type = Backbone.Model.extend({
         defaults : {
             type: ""
-        }
+        },
+        idAttribute: 'id'
     });
     
     var Pc = Backbone.Model.extend({
+        idAttribute: 'id',
         defaults : {
             'id' : null,
             'type' : 2,

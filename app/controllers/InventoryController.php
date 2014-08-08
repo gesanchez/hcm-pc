@@ -63,7 +63,7 @@ class InventoryController extends \BaseController{
             $marca = Input::get('marca');
             $proc_marca = Input::get('proc_marca');
             $proc_modelo = Input::get('proc_modelo');
-            $proc_velocidad = Input::get('pro_velocidad');
+            $proc_velocidad = Input::get('proc_velocidad');
             $pulgadas = Input::get('pulgadas');
             $ram = Input::get('ram');
             $serial = Input::get('serial');
@@ -171,5 +171,17 @@ class InventoryController extends \BaseController{
             'ok' => true
         ), 200);
 
+    }
+    
+    public function update(){
+        
+        $userAuth = Auth::user();
+        $type = Input::get('type');
+        
+        if ($type == 1){
+            
+        }else if ($type === 2){
+            
+        }
     }
 }

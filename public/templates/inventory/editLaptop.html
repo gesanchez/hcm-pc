@@ -5,7 +5,7 @@
             <label>Usuario responsable</label>
             <select data-placeholder="Elige un usuario" name="user_asigned" class="chzn-select form-control">
                 <% _.each(users, function(user){ %>
-                <option value="<%= user.id %>"><%= user.nombre + ' ' + user.apellido %></option>
+                <option value="<%= user.id %>" <% if (user_asigned == user.id) { %>selected=""<% } %>><%= user.nombre + ' ' + user.apellido %></option>
                 <% }); %>
             </select>
             <span class="help-inline"></span>
@@ -18,48 +18,48 @@
         <div class="row">
             <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 form-group">
                 <label>Marca</label>
-                <input type="text" class="form-control" name="marca">
+                <input type="text" class="form-control" name="marca" value="<%= marca %>">
                 <span class="help-inline"></span>
             </div>
             <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 form-group">
                 <label>Serial</label>
-                <input type="text" class="form-control" name="serial">
+                <input type="text" class="form-control" name="serial" value="<%= serial %>">
                 <span class="help-inline"></span>
             </div>
         </div>
         <div class="row">
             <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 form-group">
                 <label>Pulgadas</label>
-                <input type="text" class="form-control" name="pulgadas">
+                <input type="text" class="form-control" name="pulgadas" value="<%= pulgadas %>">
                 <span class="help-inline"></span>
             </div>
             <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 form-group">
                 <label>Capacidad de disco duro (MB)</label>
-                <input type="text" class="form-control" name="disco" maxlength="10">
+                <input type="text" class="form-control" name="disco" maxlength="10" value="<%= disco %>">
                 <span class="help-inline"></span>
             </div>
         </div>
         <div class="row">
             <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 form-group">
                 <label>Capacidad de memoria ram (MB)</label>
-                <input type="text" class="form-control" name="ram" maxlength="10">
+                <input type="text" class="form-control" name="ram" maxlength="10" value="<%= ram %>">
                 <span class="help-inline"></span>
             </div>
             <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 form-group">
                 <label>Marca del procesador</label>
-                <input type="text" class="form-control" name="proc_marca">
+                <input type="text" class="form-control" name="proc_marca" value="<%= proc_marca %>">
                 <span class="help-inline"></span>
             </div>
         </div>
         <div class="row">
             <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 form-group">
                 <label>Velocidad del procesador</label>
-                <input type="text" class="form-control" name="proc_velocidad">
+                <input type="text" class="form-control" name="proc_velocidad" value="<%= proc_velocidad %>">
                 <span class="help-inline"></span>
             </div>
             <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 form-group">
                 <label>Modelo del procesador</label>
-                <input type="text" class="form-control" name="proc_modelo">
+                <input type="text" class="form-control" name="proc_modelo" value="<%= proc_modelo %>">
                 <span class="help-inline"></span>
             </div>
         </div>

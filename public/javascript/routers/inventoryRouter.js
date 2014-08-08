@@ -14,7 +14,8 @@ define([
                 "addItem" : "addItem",
                 "addPc" : "addPc",
                 "addLaptop" : "addLaptop",
-                "view/:id" : "view"
+                "view/:id" : "view",
+                "edit/:id" : "edit"
             },
             initialize: function(options){
                 this.options = options || {};
@@ -82,6 +83,28 @@ define([
 
                         var PcView = new View.PcView({model: new Model.Pc(ele.get('element'))});
                         self.listContainer.html(PcView.el);
+                        
+                    }
+                }
+            },
+            edit: function(id){
+                var self = this;
+                self.app.$el.find('div.page-header').hide();
+                var ele = self.collection.find(function(element){
+                    return id === element.id;
+                });
+                
+                if (ele !== undefined){
+                    
+                    if (ele.get('type') == 1){
+                        
+                        var LaptopEdit = new View.LaptopEdit({model: new Model.Laptop(element), users: self.options.users});
+                        self.listContainer.html(LaptopEdit.el);
+                        
+                    }else if(ele.get('type') == 2){
+
+                        var PcEdit = new View.PcEdit({model: new Model.Pc(ele.get('element')), users: self.options.users});
+                        self.listContainer.html(PcEdit.el);
                         
                     }
                 }
