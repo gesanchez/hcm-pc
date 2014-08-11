@@ -41,7 +41,7 @@ define([
             'proc_marca' : '',
             'user_asigned' : ''
         },
-        url : '/inventario',
+        urlRoot : '/inventario',
         validate : function(attrs, options){
             var errors = [];
             
@@ -109,7 +109,7 @@ define([
             'mouse' : '',
             'user_asigned' : ''
         },
-        url : '/inventario',
+        urlRoot : '/inventario',
         validate : function(attrs, options){
             var errors = [];
             

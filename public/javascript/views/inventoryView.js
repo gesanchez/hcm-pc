@@ -483,7 +483,7 @@ define([
                     success : function(model,xhr){ 
                         self.$el.find('button[name="save"]').prop('disabled',false);
                         if (xhr.ok === true){
-                            self.trigger("pc:save", xhr);
+                            self.trigger("laptop:update", xhr);
                             App.router.navigate('',{trigger: true});
                         }else if (xhr.ok === false){
                             self.showValidationError(xhr.message);
@@ -526,6 +526,8 @@ define([
         }
     });
     
+    _.extend(editLaptop, Backbone.Events);
+    
     var editPc = Backbone.View.extend({
         tagName: 'div',
         className: 'row',
@@ -553,10 +555,7 @@ define([
                 var $this = $(this);
                 self.model.set($this.attr('name'), $this.val());
             });
-            
-            console.log(self.model.isNew());
-            console.log(self.model.id);
-            console.log(self.model.get('id'));
+
             self.model.set('user_asigned',this.$el.find('select[name="user_asigned"]').val());
             
             if (!self.model.isValid()) {
@@ -567,7 +566,7 @@ define([
                     success : function(model,xhr){ 
                         self.$el.find('button[name="save"]').prop('disabled',false);
                         if (xhr.ok === true){
-                            self.trigger("pc:save", xhr);
+                            self.trigger("pc:update", xhr);
                             App.router.navigate('',{trigger: true});
                         }else if (xhr.ok === false){
                             self.showValidationError(xhr.message);
@@ -609,6 +608,8 @@ define([
             }
         }
     });
+    
+    _.extend(editPc, Backbone.Events);
     
     return {
         List : ItemList,

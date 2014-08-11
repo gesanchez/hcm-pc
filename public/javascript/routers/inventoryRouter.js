@@ -98,14 +98,21 @@ define([
                     
                     if (ele.get('type') == 1){
                         
-                        var LaptopEdit = new View.LaptopEdit({model: new Model.Laptop(element), users: self.options.users});
+                        var LaptopEdit = new View.LaptopEdit({model: new Model.Laptop(ele.get('element')), users: self.options.users});
                         self.listContainer.html(LaptopEdit.el);
+                        LaptopEdit.on('laptop:update', function(object){
+                            ele.set('element', object);
+                            ele.set('codigo', object.serial);
+                        });
                         
                     }else if(ele.get('type') == 2){
 
                         var PcEdit = new View.PcEdit({model: new Model.Pc(ele.get('element')), users: self.options.users});
                         self.listContainer.html(PcEdit.el);
-                        
+                        PcEdit.on('pc:update', function(object){
+                            ele.set('element', object);
+                            ele.set('codigo', object.serial);
+                        });
                     }
                 }
             }

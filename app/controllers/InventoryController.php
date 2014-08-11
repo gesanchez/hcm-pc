@@ -68,12 +68,7 @@ class InventoryController extends \BaseController{
             $ram = Input::get('ram');
             $serial = Input::get('serial');
             $user_asigned = Input::get('user_asigned');
-            
-            if (Inventory::where('user_asigned','=', $user_asigned)->count() > 0){
-                $data = array('ok' => false, 'message' => 'Ya este usuario se encuentra asignado a otro equipo');
-                return Response::json($data);
-            }
-            
+                        
             if (Inventory::where('codigo','=', $serial)->count() > 0){
                 $data = array('ok' => false, 'message' => 'Ya existe un equipo con ese serial');
                 return Response::json($data);
@@ -109,12 +104,7 @@ class InventoryController extends \BaseController{
             $serial = Input::get('serial');
             $teclado = Input::get('teclado');
             $user_asigned = Input::get('user_asigned');
-            
-            if (Inventory::where('user_asigned','=', $user_asigned)->count() > 0){
-                $data = array('ok' => false, 'message' => 'Ya este usuario se encuentra asignado a otro equipo');
-                return Response::json($data);
-            }
-            
+                        
             if (Inventory::where('codigo','=', $serial)->count() > 0){
                 $data = array('ok' => false, 'message' => 'Ya existe un equipo con ese serial');
                 return Response::json($data);
@@ -173,15 +163,91 @@ class InventoryController extends \BaseController{
 
     }
     
-    public function update(){
+    public function update($id){
         
         $userAuth = Auth::user();
         $type = Input::get('type');
         
         if ($type == 1){
             
+            $disco = Input::get('disco');
+            $marca = Input::get('marca');
+            $proc_marca = Input::get('proc_marca');
+            $proc_modelo = Input::get('proc_modelo');
+            $proc_velocidad = Input::get('proc_velocidad');
+            $pulgadas = Input::get('pulgadas');
+            $ram = Input::get('ram');
+            $serial = Input::get('serial');
+            $user_asigned = Input::get('user_asigned');
+            
+            if (Inventory::where('codigo','=', $serial)->where('resource_id', '!=', $id)->count() > 0){
+                $data = array('ok' => false, 'message' => 'Ya existe un equipo con ese serial');
+                return Response::json($data);
+            }
+            
+            $laptop = Laptop::find($id);
+            $laptop->update(
+                array(
+                    'serial' => $serial, 
+                    'disco' => $disco, 
+                    'ram' => $ram, 
+                    'proc_velocidad' => $proc_velocidad, 
+                    'proc_modelo' => $proc_modelo,
+                    'proc_marca' => $proc_marca, 
+                    'pulgadas' => $pulgadas,
+                    'marca' => $marca
+                )
+            );
+            
+            Inventory::where('type','=','1')->where('resource_id','=',$id)->update(array('user_asigned' => $user_asigned, 'codigo' => $serial));
+            
+            $laptop['ok'] = true;
+            $laptop['deletable'] = ($userAuth->rol == 1) ? true: false;
+            $laptop['updateable'] = ($userAuth->rol == 1) ? true: false;
+            return Response::json($laptop);
+            
         }else if ($type === 2){
             
+            $disco = Input::get('disco');
+            $mon_marca = Input::get('mon_marca');
+            $mon_pulgadas = Input::get('mon_pulgadas');
+            $mouse = Input::get('mouse');
+            $proc_marca = Input::get('proc_marca');
+            $proc_modelo = Input::get('proc_modelo');
+            $proc_velocidad = Input::get('proc_velocidad');
+            $ram = Input::get('ram');
+            $serial = Input::get('serial');
+            $teclado = Input::get('teclado');
+            $user_asigned = Input::get('user_asigned');
+            
+            if (Inventory::where('codigo','=', $serial)->where('resource_id', '!=', $id)->count() > 0){
+                $data = array('ok' => false, 'message' => 'Ya existe un equipo con ese serial');
+                return Response::json($data);
+            }
+            
+            $pcs = Pcs::find($id);
+        
+            $pcs->update(
+                array(
+                    'serial' => $serial, 
+                    'disco' => $disco, 
+                    'ram' => $ram, 
+                    'proc_velocidad' => $proc_velocidad, 
+                    'proc_modelo' => $proc_modelo,
+                    'proc_marca' => $proc_marca, 
+                    'mon_marca' => $mon_marca,
+                    'mon_pulgadas' => $mon_pulgadas,
+                    'teclado' => $teclado,
+                    'mouse' => $mouse,
+                )
+            );
+            
+            Inventory::where('type','=','2')->where('resource_id','=',$id)->update(array('user_asigned' => $user_asigned, 'codigo' => $serial));
+                        
+            $pcs['ok'] = true;
+            $pcs['deletable'] = ($userAuth->rol == 1) ? true: false;
+            $pcs['updateable'] = ($userAuth->rol == 1) ? true: false;
+            return Response::json($pcs);
         }
     }
 }
