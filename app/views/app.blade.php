@@ -15,7 +15,7 @@
         <div class="wrap" id="wrap-app">
             <div class="navbar-header">
                 <a class="navbar-brand" href="{{ route('root') }}">
-                    <b>HCM</b>
+                    <b style="color: #FFFFFF">HCM</b>
                 </a>
             </div>
             <nav class="navbar-collapse collapse navbar-default">
@@ -25,15 +25,30 @@
                         <a href="{{ route('users') }}">Usuarios</a>
                     </li>
                     @endif
+                    
+                    @if (Auth::user()->rol == 2)
+                    <li>
+                        <a href="{{ route('gincidentes') }}">Gesti&oacute;n de incidentes</a>
+                    </li>
+                    @endif
+                    
+                    @if (Auth::user()->rol == 1 || Auth::user()->rol == 2)
                     <li>
                         <a href="{{ route('inventory') }}">Inventario</a>
                     </li>
+                    @endif
+                    
+                    @if (Auth::user()->rol == 1 || Auth::user()->rol == 2)
                     <li>
                         <a href="{{ route('problems') }}">Problemas t&iacute;picos</a>
                     </li>
+                    @endif
+                    
+                    @if (Auth::user()->rol == 4)
                     <li>
                         <a href="#">Reportar un problema</a>
                     </li>
+                    @endif
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                             <i class="icon-bar glyphicon glyphicon-user"></i>
@@ -55,7 +70,7 @@
                 @yield('content')
             </div>
             <div class="footer">
-                Footer
+                hcm &COPY; {{ date('Y') }} |  Meriveth Mogollon
             </div>
         </div>
         <script type="text/javascript" src="{{ asset('javascript/require.js') }}"></script>

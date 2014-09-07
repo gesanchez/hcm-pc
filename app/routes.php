@@ -61,3 +61,6 @@ Route::get('inventario', array('as' => 'inventory', 'before' => 'auth', 'uses' =
 Route::post('inventario', array('as' => 'inventory', 'before' => 'auth|csrf', 'uses' => 'InventoryController@save'));
 Route::delete('inventario/{id}', array('before' => 'auth|csrf', 'uses' => 'InventoryController@destroy'));
 Route::put('inventario/{id}', array('before' => 'auth|csrf', 'uses' => 'InventoryController@update'));
+
+# incident management
+Route::get('gincidentes', array('as' => 'gincidentes', 'before' => 'auth', 'uses' => 'GIncidentController@index'));
