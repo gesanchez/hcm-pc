@@ -55,11 +55,15 @@ textarea{
 
 .box_element{
     padding-bottom: 5px;
+    box-shadow: 2px 2px 15px #CCCCCC;
+    -moz-box-shadow: 2px 2px 15px #CCCCCC;
+    -webkit-box-shadow: 2px 2px 15px #CCCCCC;
 }
 
 .box_element.green{
     background-color: #21b384;
-    color: #FFFFFF
+    color: #FFFFFF;
+    border: 0px;
 }
 
 .box_element .tools{
@@ -75,6 +79,21 @@ textarea{
     border-bottom-left-radius: 3px;
     -moz-border-bottom-left-radius: 3px;
     -webkit-border-bottom-left-radius: 3px;
+}
+
+.box_element .circlephoto{
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    display: block;
+    width: 30px;
+    height: 30px;
+    background-position: center center;
+    background-repeat: no-repeat;
+    border-radius: 50%;
+    -moz-border-radius: 50%;
+    -webkit-border-radius: 50%;
 }
 
 .header_box{

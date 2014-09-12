@@ -64,3 +64,4 @@ Route::put('inventario/{id}', array('before' => 'auth|csrf', 'uses' => 'Inventor
 
 # incident management
 Route::get('gincidentes', array('as' => 'gincidentes', 'before' => 'auth', 'uses' => 'GIncidentController@index'));
+Route::put('gincidentes/{id}', array('as' => 'gincidentes', 'before' => 'auth|csrf', 'uses' => 'GIncidentController@update'));

@@ -17,7 +17,7 @@ class GincidenteTable extends Migration {
                 $table->timestamp('fecha',100);
                 $table->text('descripcion')->nullable();
                 $table->integer('tecnico_id')->nullable();
-                $table->tinyInteger('estatus'); // 1- Pendiente | 2 - En Proceso | 3 - Listo
+                $table->tinyInteger('estatus'); // 1- Pendiente | 2 - En Proceso | 3 - Revisada | 0 - Rechazado
                 $table->text('informe')->nullable();
                 $table->timestamps();
             });

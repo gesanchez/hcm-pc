@@ -8,7 +8,8 @@ require(['conf'], function(conf){
             backbone: 'backbone',
             bootstrap : 'bootstrap.min',
             templates: conf.templates,
-            chosen : 'chosen'
+            chosen : 'chosen',
+            masonry: 'masonry'
         },
         shim: {
             underscore: {
@@ -24,6 +25,9 @@ require(['conf'], function(conf){
             "chosen" : {
                 deps: ["jquery"],
                 exports: 'jQuery.fn.chosen'
+            },
+            "masonry":{
+                deps: ["jquery"]
             }
         }
     });

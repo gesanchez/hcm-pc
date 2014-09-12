@@ -1,0 +1,62 @@
+<div class="box_element">
+    <div style="text-align: center;position: relative">
+        <i class="fa fa-bug" style="font-size: 90px"></i>
+        <div class="tools">
+            <span class="glyphicon glyphicon-cog dropdown-toggle" title="Opciones" data-toggle="dropdown" style="font-size: 18px;cursor: pointer"></span>
+            <ul class="dropdown-menu" role="menu">
+                <li><a href="#" data-name="view">Ver informaci&oacute;n</a></li>
+                <% if (estatus == 1) {%>
+                <li><a href="#" data-name="asign">Asignar</a></li>
+                <li><a href="#" data-name="reject">Rechazar</a></li>
+                <% } %>
+            </ul>
+        </div>
+    </div>
+    <div>
+        <% if (user !== null) {%>
+        <div style='padding-left: 2px;padding-right: 2px'>
+            <% if (user.foto === null || user.foto === "") { %>
+            <i class="fa fa-user" style='float: left'></i>
+            <% } else { %>
+            <i style="background-image: url('<%= user.foto %>');float: left" class='circlephoto'></i>
+            <% } %>
+            <p style='float: left;max-width: 200px;margin-left: 5px'><%= user.nombre %>&nbsp;<%= user.apellido %></p>
+        </div>
+        <% } %>
+        <div style='clear: both'></div>
+        <div style="padding-left: 5px;padding-top: 10px">
+            <p><i class="fa fa-clock-o fa-lg fa-fw"></i>&nbsp;<%= fecha %></p>
+        </div>
+        <div style="padding-left: 5px;padding-top: 10px" class="row">
+            <div class="col-xs-6">
+                <label>Estatus</label>
+                <% if (estatus == 1) {%>
+                <p>Pendiente</p>
+                <%}else if (estatus == 2){%>
+                <p>En proceso</p>
+                <%}else if (estatus == 3){%>
+                <p>Revisada</p>
+                <% }else if (estatus == 0){ %>
+                <p>Rechazada</p>
+                <% } %>
+            </div>
+            <div class="col-xs-6">
+                <label>Responsable</label>
+                <% if (tecnico !== null) {%>
+                    <% if (tecnico.foto === null || tecnico.foto === "") { %>
+                    <i class="fa fa-user fa-lg" data-toggle="tooltip" data-placement="top" title="<%= tecnico.nombre %> <%= tecnico.apellido %>"></i>
+                    <% }else{ %>
+                    <i style="background-image: url('<%= tecnico.foto %>');" class='circlephoto' data-toggle="tooltip" data-placement="top" title="<%= tecnico.nombre %> <%= tecnico.apellido %>"></i>
+                    <% } %>
+                <%} else {%>
+                <p>No asignado aun</p>
+                <% } %>
+            </div>
+            <div style='clear: both'></div>
+        </div>
+        <div style="padding-left: 5px;padding-top: 10px">
+            <label>Descripci&oacute;n</label>
+            <p><%= descripcion %></p>
+        </div>
+    </div>
+</div>

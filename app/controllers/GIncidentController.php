@@ -40,12 +40,12 @@ class GIncidentController extends \BaseController {
             foreach (GIncidents::take(30)->orderBy('fecha','ASC')->get() as $value){
                 $incidents[] = array(
                     'id' => $value->id,
-                    'fecha' => $value->fecha,
-                    'descripcion' => $value->descripcion,
+                    'fecha' => date("d/m/Y H:i a",  strtotime($value->fecha)),
+                    'descripcion' => (strlen($value->descripcion) > 90) ? substr($value->descripcion,0,90).'...' : $value->descripcion,
                     'estatus' => $value->estatus,
                     'informe' => $value->informe,
-                    'deletable' => true,
-                    'updateable' => true
+                    'user' => User::find($value->usuario_id),
+                    'tecnico' => User::find($value->tecnico_id)
                 );
             }
             
@@ -105,9 +105,19 @@ class GIncidentController extends \BaseController {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function update($id)
-	{
-		//
+	public function update($id){
+            $userAuth = Auth::user();
+            
+            $gincident = GIncidents::find($id);
+            $estatus = Input::get('estatus');
+            
+            if (count ($gincident) === 0){ return Response::json('{"ok": false, "message":"El incidente ya no se encuentra registrado"}'); }
+            
+            $gincident->estatus = $estatus;
+            $gincident->save();
+
+            $gincident['ok'] = true;
+            return Response::json($gincident);
 	}
 
 
@@ -117,9 +127,8 @@ class GIncidentController extends \BaseController {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function destroy($id)
-	{
-		//
+	public function destroy($id){
+		
 	}
 
 
