@@ -3,15 +3,14 @@ define([
     'underscore',
     'backbone',
     'app',
-    'text!templates/gincidents/gincident.html',
+    'text!templates/tincidents/tincident.html',
     'confirm',
     'jquery-bridget',
     'masonry',
-    'text!templates/gincidents/asignuser.html',
-    'text!templates/gincidents/user.html',
+    'text!templates/tincidents/informe.html',
     'text!templates/gincidents/viewIncident.html',
     'datetimepicker'
-],function($, _, Backbone, App, Template,confirm,Bridget,Masonry, CollectionUser, User, View){
+],function($, _, Backbone, App, Template,confirm,Bridget,Masonry, Informe, View){
     'use strict';
     
     Bridget('masonry', Masonry );
@@ -72,47 +71,21 @@ define([
         },
         events : {
             'click a[data-name="view"]' : 'showInformation',
-            'click a[data-name="reject"]' : 'reject',
-            'click a[data-name="asign"]' : 'asign'
+            'click a[data-name="checked"]' : 'checked',
+            'click a[data-name="process"]' : 'process'
         },
         showInformation : function(e){
             e.preventDefault();
             App.router.navigate('view/' + this.model.id, {trigger: true});
         },
-        reject : function(e){
+        checked : function(e){
             e.preventDefault();
-            var target = $(e.target),
-                self = this,
-                parent = target.parent().addClass('hidden');
-                $.confirm({
-                    text: "Desea usted rechazar este incidente?",
-                    confirmButton: "Si",
-                    cancelButton: "No",
-                    confirm: function(button) {
-                        self.model.set('estatus',4);
-                        self.model.save(null,{
-                            wait: true,
-                            success: function(xhr){
-                                if (xhr.ok === true){
-                                    self.render();
-                                }else if (xhr.ok === false){
-                                    alert(xhr.message);
-                                }
-                                
-                            },
-                            error: function(){
-                                parent.removeClass('hidden');
-                            }
-                        });
-                    },
-                    cancel: function(button) {
-                        parent.removeClass('hidden');
-                    }
-                });
+            App.router.navigate('informe/' + this.model.id, {trigger: true});
         },
-        asign: function(e){
+        process: function(e){
             e.preventDefault();
-            App.router.navigate('asignacion/' + this.model.id, {trigger: true});
+            this.model.set('estatus',2);
+            this.model.save(null);
         },
         removeElement : function(e){
             this.remove();
@@ -139,7 +112,6 @@ define([
         search: function(){
             var self = this,
                 parameters = {
-                    tecnicos : decodeURIComponent(self.$el.find('input:text[name="tecnicos"]').val()),
                     usuarios : decodeURIComponent(self.$el.find('input:text[name="usuarios"]').val()),
                     fecha: self.$el.find('input:text[name="date"]').val(),
                     estatus: self.$el.find('select[name="estatus"]').val()
@@ -201,78 +173,9 @@ define([
         }
     });
     
-    var userView = Backbone.View.extend({
-        tagname: 'div',
-        className: 'row',
-        template: _.template(User),
-        initialize: function(){
-            this.render();
-            this.model.on('change', this.render, this);
-            this.model.on('repaint', this.render, this);
-        },
-        events: {
-            "click button.btn-info" : "asign",
-            "click button.btn-danger" : "reject"
-        },
-        render: function(){
-            this.$el.html(this.template(this.model.toJSON()));
-            return this;
-        },
-        asign: function(){
-            this.model.set('selected', true);
-        },
-        reject: function(){
-            this.model.set('selected', false);
-        }
-    });
+
 //    _.extend(ProblemAdd, Backbone.Events);
     
-    
-    var asignUser = Backbone.View.extend({
-       tagName: 'div',
-       className : 'modal fade',
-       template: _.template(CollectionUser),
-       attributes : {
-            tabindex : "-1",
-            role : "dialog",
-            'aria-labelledby' : "myModalLabel",
-            'aria-hidden' : "true"
-        },
-        initialize: function(){
-            this.render();
-            this.content = this.$el.find('.modal-body').first();
-            
-            this.$el.on('hidden.bs.modal', function (e) {
-                App.router.navigate('', {trigger: true});
-            });
-        },
-        addItem : function(item){
-            var user = new userView({ model: item });
-            this.content.append(user.el);
-        },
-        repaint: function(){
-            var self = this;
-            self.$el.empty();
-            self.$el.html(self.template());
-            self.collection.each(function(user){
-                self.addItem(user);
-            }, this);
-        },
-        render: function(){
-            var self = this;
-            self.$el.empty();
-            self.$el.html(self.template());
-            self.collection.fetch({
-                success: function(response){
-                    self.collection.each(function(user){
-                        self.addItem(user);
-                    }, this);
-                }
-            });
-            
-            return self;
-        }
-    });
     
     var viewIncident = Backbone.View.extend({
        tagName: 'div',
@@ -301,12 +204,42 @@ define([
         }
     });
     
+    var Informe = Backbone.View.extend({
+        tagName : 'div',
+        className: 'modal fade',
+        template: _.template(Informe),
+        attributes : {
+            tabindex : "-1",
+            role : "dialog",
+            'aria-labelledby' : "myModalLabel",
+            'aria-hidden' : "true"
+        },
+        events:{
+            'click button[name="save"]': 'save'
+        },
+        initialize: function(){
+            this.render();            
+            this.$el.on('hidden.bs.modal', function (e) {
+                App.router.navigate('', {trigger: true});
+            });
+            this.model.on('change', this.render, this);
+        },
+        render: function(){
+            this.$el.html(this.template(this.model.toJSON()));
+            return this;
+        },
+        save: function(){
+            var informe = this.$el.find('textarea').val();
+            this.model.set('informe', informe);
+        }
+    });
+    
     
     return {
         List : ItemList,
         Problem : Item,
         App : ItemApp,
-        User: asignUser,
-        View: viewIncident
+        View: viewIncident,
+        Informe: Informe
     };
 });

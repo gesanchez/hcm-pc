@@ -1,8 +1,9 @@
 define([
     'jquery',
-    'models/gincidentsModel',
-    'views/gincidentsView'
-], function ($, Model, View) {
+    'backbone',
+    'routers/gincidentsRouter',
+    'app'
+], function ($, Backbone, Router, App) {
     'use strict';
     
     /**
@@ -11,15 +12,23 @@ define([
      * @param {json} with inital data of users
      */
     var init = function(app_container, detail, data, count){
-        var ele = $('#' + app_container),
-            list = $('#' + detail),
-            Collection = new Model.Collection($.parseJSON(data));
-            Collection.total = count;
-            
-        var App = new View.App({el: '#' + app_container, collection: Collection}),
-            List = new View.List({collection : Collection, el: '#' + detail});
-            
-        List.render();
+        
+        var router = new Router({data: $.parseJSON(data), count: count, container: '#' + app_container, detail: '#' + detail});
+        App.router = router;
+        Backbone.history.start();
+        
+//        var ele = $('#' + app_container),
+//            list = $('#' + detail),
+//            Collection = new Model.Collection($.parseJSON(data)),
+//            userCollection = new Model.UserCollection(),
+//            userview = new View.User({collection: userCollection, information: Collection});
+//            Collection.total = count;
+//            
+//        var App = new View.App({el: '#' + app_container, collection: Collection}),
+//            List = new View.List({collection : Collection, el: '#' + detail, usersView: userview});
+//            
+//        List.render();
+//        ele.append(userview.el);
         
 //        /* Observer when a problem is removed */
 //        problemList.on('element:destory', function(){

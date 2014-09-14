@@ -9,7 +9,8 @@ require(['conf'], function(conf){
             bootstrap : 'bootstrap.min',
             templates: conf.templates,
             chosen : 'chosen',
-            masonry: 'masonry'
+            masonry: 'masonry',
+            highcharts: 'highcharts'
         },
         shim: {
             underscore: {
@@ -28,6 +29,10 @@ require(['conf'], function(conf){
             },
             "masonry":{
                 deps: ["jquery"]
+            },
+            highcharts: {
+                "exports": "Highcharts",
+                "deps": [ "jquery"] 
             }
         }
     });

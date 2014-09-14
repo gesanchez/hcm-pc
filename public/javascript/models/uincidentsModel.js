@@ -14,7 +14,7 @@ define([
             user : null,
             tecnico : null
         },
-        urlRoot: '/gincidentes',
+        urlRoot: '/uincidentes',
         idAttribute: 'id'
     });
     
@@ -30,7 +30,7 @@ define([
             return response.data;
         },
         model : Item,
-        url : '/gincidentes',
+        url : '/uincidentes',
         search : function(parameters, callback){
             var self = this,
                 params = _.extend(parameters, {page: 0, limit : self.limit});
@@ -48,28 +48,9 @@ define([
             });
         }
     });
-    
-    var users = Backbone.Model.extend({
-        defaults : {
-            id : null,
-            nombre: '',
-            apellido: '',
-            foto: '',
-            selected: false
-        },
-        urlRoot: '/gincidentes/tecnicos',
-        idAttribute: 'id'
-    });
-    
-    var usersCollection = Backbone.Collection.extend({
-        model : users,
-        url : '/gincidentes/tecnicos'
-    });    
-    
+   
     return {
         Model : Item,
-        Collection: itemsCollection,
-        User: users,
-        UserCollection: usersCollection
+        Collection: itemsCollection
     };
 });

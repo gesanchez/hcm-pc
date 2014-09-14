@@ -1,0 +1,12 @@
+<div>
+    <div class="col-xs-2">
+        <% if (user.foto !== '') {%>
+        <i class='circlephoto' style='background-image: url("<%= user.foto %>")' data-toggle="tooltip" data-placement="top" title='<%= user.nombre %> <%= user.apellido %>'></i>
+        <% } else { %>
+        <i class="fa fa-user" style="font-size: 40px" data-toggle="tooltip" data-placement="top" title='<%= user.nombre %> <%= user.apellido %>'></i>
+        <% } %>
+    </div>
+    <div class="col-xs-10">
+        <p style="margin-top: 10px"><%= descripcion %>
+    </div>
+</div>

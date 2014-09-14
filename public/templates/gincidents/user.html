@@ -1,0 +1,19 @@
+<div style="margin-top: 20px">
+    <div class="col-xs-2">
+        <% if (foto !== '') {%>
+        <i class='circlephoto' style='background-image: url("<%= foto %>")'></i>
+        <% } else { %>
+        <i class="fa fa-user" style="font-size: 40px"></i>
+        <% } %>
+    </div>
+    <div class="col-xs-6">
+        <p style="margin-top: 10px"><%= nombre %>&nbsp;<%= apellido %>
+    </div>
+    <div class="col-xs-4">
+        <% if (selected === false){ %>
+        <button class="btn btn-info" type="button">Asignar</button>
+        <% } else { %>
+        <button class="btn btn-danger" type="button">Remover Asignaci&oacute;n</button>
+        <% } %>
+    </div>
+</div>

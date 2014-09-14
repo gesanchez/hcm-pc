@@ -1,0 +1,78 @@
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">
+              <span aria-hidden="true">&times;</span>
+              <span class="sr-only" data-name="icon_close">Cerrar</span>
+          </button>
+        <h4 class="modal-title">Ver informaci&oacute;n de incidente</h4>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-xs-4 col-xs-offset-2">
+                    <% if (user !== null && user !== '') { %>
+                        <% if (user.foto !== null && user.foto !== ''){ %>
+                            <i class="circlephoto" style="background-image: url('<%= user.foto %>');width: 50px;height: 50px"></i>
+                        <% } else { %>
+                            <i class='fa fa-user' style='font-size: 50px'></i>
+                        <% } %>
+                    <% } %>
+                </div>
+                <div class="col-xs-6">
+                    <label>Usuario</label>
+                    <% if (user !== null && user !== '') { %>
+                    <p><%= user.nombre %>&nbsp;<%= user.apellido %></p>
+                    <% } %>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+            <div class="row">
+                <div class="col-xs-6 col-xs-offset-6">
+                    <label>Fecha de incidente</label>
+                    <p><%= fecha %></p>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+            <div class="row">
+                <div class="col-xs-6">
+                    <label>Tecnico responsable</label>
+                    <% if (tecnico !== null && tecnico !== '') { %>
+                    <p><%= tecnico.nombre %>&nbsp;<%= tecnico.apellido %></p>
+                    <% }else { %>
+                    <p>No asignado aun</p>
+                    <% } %>
+                </div>
+                <div class="col-xs-6">
+                    <label>Estatus</label>
+                    <% if (estatus == 1) {%>
+                    <p>Pendiente</p>
+                    <%}else if (estatus == 2){%>
+                    <p>En proceso</p>
+                    <%}else if (estatus == 3){%>
+                    <p>Revisada</p>
+                    <% }else if (estatus == 4){ %>
+                    <p>Rechazado</p>
+                    <% } %>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <label>Descripci&oacute;n del problema</label>
+                    <p><%= descripcion %></p>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <label>Informe</label>
+                    <p><%= informe %></p>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal" name="close">Cerrar</button>
+        </div>
+    </div>
+</div>

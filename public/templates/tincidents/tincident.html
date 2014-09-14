@@ -5,8 +5,12 @@
             <ul class="dropdown-menu" role="menu">
                 <li><a href="#" data-name="view">Ver informaci&oacute;n</a></li>
                 <% if (estatus == 1) {%>
-                <li><a href="#" data-name="asign">Asignar</a></li>
-                <li><a href="#" data-name="reject">Rechazar</a></li>
+                <li><a href="#" data-name="process">Procesar</a></li>
+                <li><a href="#" data-name="checked">Revisado</a></li>
+                <% }else if (estatus == 2) {%>
+                <li><a href="#" data-name="checked">Revisado</a></li>
+                <% }else if (estatus == 3) {%>
+                <li><a href="#" data-name="checked">Editar informe</a></li>
                 <% } %>
             </ul>
         </div>
@@ -34,7 +38,7 @@
                 <%}else if (estatus == 2){%>
                 <p>En proceso</p>
                 <%}else if (estatus == 3){%>
-                <p>Revisada</p>
+                <p>Revisado</p>
                 <% }else if (estatus == 4){ %>
                 <p>Rechazado</p>
                 <% } %>

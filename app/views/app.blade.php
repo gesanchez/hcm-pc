@@ -10,6 +10,7 @@
         <link rel="stylesheet" href="{{ asset('stylesheet/bootstrap-theme.min.css') }}"/>
         <link rel="stylesheet" href="{{ asset('stylesheet/font-awesome.min.css') }}"/>
         <link rel="stylesheet" href="{{ asset('stylesheet/chosen.min.css') }}"/>
+        <link rel="stylesheet" href="{{ asset('stylesheet/datetimepicker.css') }}"/>
     </head>
     <body>
         <div class="wrap" id="wrap-app">
@@ -41,12 +42,6 @@
                     @if (Auth::user()->rol == 1 || Auth::user()->rol == 2)
                     <li>
                         <a href="{{ route('problems') }}">Problemas t&iacute;picos</a>
-                    </li>
-                    @endif
-                    
-                    @if (Auth::user()->rol == 4)
-                    <li>
-                        <a href="#">Reportar un problema</a>
                     </li>
                     @endif
                     <li class="dropdown">

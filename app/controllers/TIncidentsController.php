@@ -1,16 +1,13 @@
 <?php
 
-class GIncidentController extends \BaseController {
 
-	/**
-	 * Display a listing of the resource.
-	 *
-	 * @return Response
-	 */
-	public function index(){
-            $userAuth = Auth::user();
-            
-            $tecnicos = Input::get('tecnicos');
+class TIncidentsController extends \BaseController{
+    
+    public function index(){
+        
+        $userAuth = Auth::user();
+        
+        $tecnicos = Input::get('tecnicos');
             $usuarios = Input::get('usuarios');
             $fecha = Input::get('fecha');
             $estatus = Input::get('estatus');
@@ -18,11 +15,7 @@ class GIncidentController extends \BaseController {
             $page = Input::get('page');
             $off = $limit * $page;
             
-            $where = "";
-            if (!empty ($tecnicos)){
-                if (!empty ($where)) { $where .= " AND";}
-                $where .= " CONCAT(tecn.nombre,' ',tecn.apellido) LIKE '%$tecnicos%'";
-            }
+            $where = "WHERE inc.tecnico_id = {$userAuth->id}";
             
             if (!empty ($usuarios)){
                 if (!empty ($where)) { $where .= " AND";}
@@ -41,7 +34,6 @@ class GIncidentController extends \BaseController {
                 $where .= " inc.estatus = {$estatus}";
             }
             
-            if (!empty ($where)) { $where = "WHERE ". $where;}
             
             if (Request::ajax()){          
                 $users = array();
@@ -67,58 +59,40 @@ class GIncidentController extends \BaseController {
                                 
                 return Response::json(array('total' => $count[0]->count, 'data' => $users));
             }
-            
-            
-            $incidents = array();
-            foreach (GIncidents::take(30)->orderBy('fecha','DESC')->get() as $value){
-                $incidents[] = array(
-                    'id' => $value->id,
-                    'fecha' => date("d/m/Y H:i a",  strtotime($value->fecha)),
-                    'descripcion' => (strlen($value->descripcion) > 90) ? substr($value->descripcion,0,90).'...' : $value->descripcion,
-                    'estatus' => $value->estatus,
-                    'informe' => $value->informe,
-                    'user' => User::find($value->usuario_id),
-                    'tecnico' => User::find($value->tecnico_id)
-                );
-            }
-            
-            return View::make('gincidents',array('incidents' => json_encode($incidents), 'count' => GIncidents::count()));
-	}
-
-
-	/**
-	 * Show the tecnicos registered
-	 *
-	 * @return Response
-	 */
-	public function getTecnicos(){
-            
-            return Response::json(User::where('rol','3')->get());
-	}
         
+        $incidents = array();
+        foreach (GIncidents::where('tecnico_id',$userAuth->id)->take(30)->orderBy('fecha','DESC')->get() as $value){
+            $incidents[] = array(
+                'id' => $value->id,
+                'fecha' => date("d/m/Y H:i a",  strtotime($value->fecha)),
+                'descripcion' => (strlen($value->descripcion) > 90) ? substr($value->descripcion,0,90).'...' : $value->descripcion,
+                'estatus' => $value->estatus,
+                'informe' => $value->informe,
+                'user' => User::find($value->usuario_id),
+                'tecnico' => User::find($value->tecnico_id)
+            );
+        }
 
-	/**
+        return View::make('tincidents',array('incidents' => json_encode($incidents), 'count' => GIncidents::where('tecnico_id',$userAuth->id)->count()));
+    }
+    
+    /**
 	 * Update the specified resource in storage.
 	 *
 	 * @param  int  $id
 	 * @return Response
 	 */
 	public function update($id){
-            $userAuth = Auth::user();
+            
             
             $gincident = GIncidents::find($id);
             $estatus = Input::get('estatus');
-            $tecnico = Input::get('tecnico');
+            $informe = Input::get('informe');
             
             if (count ($gincident) === 0){ return Response::json('{"ok": false, "message":"El incidente ya no se encuentra registrado"}'); }
             
             $gincident->estatus = $estatus;
-            
-            if (is_array($tecnico)){
-                $gincident->tecnico_id = $tecnico['id'];
-            }else{
-                $gincident->tecnico_id = null;
-            }
+            $gincident->informe = $informe;
             
             $gincident->save();
 
@@ -138,12 +112,9 @@ class GIncidentController extends \BaseController {
             
             return Response::json($data);
 	}
-
-
-	private function validateDate($date){
-            $d = DateTime::createFromFormat('d/m/Y', $date);
-            return $d && $d->format('d/m/Y') == $date;
-        }
-
-
+    
+    private function validateDate($date){
+        $d = DateTime::createFromFormat('d/m/Y', $date);
+        return $d && $d->format('d/m/Y') == $date;
+    }
 }
